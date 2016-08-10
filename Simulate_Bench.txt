@@ -793,6 +793,17 @@ canUseWeaponOnCell = function (weapon, cell) {
 	return true;
 };
 
+global canUseWeaponOnCellFrom = function (weapon, cell, from) {
+	if (!isWeapon(weapon)) { debugC("canUseWeaponOnCellFrom - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
+	
+	
+	var dist = getCellDistance(from, cell);
+	if (!(dist <= getWeaponMaxRange(weapon) && dist >= getWeaponMinRange(weapon))) return false;
+	if (isInlineWeapon(weapon) && !isOnSameLine(from, cell)) return false;
+	if (!lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
+	return true;
+};
+
 canUseChip = function (Chip, leek) {
 	if (_Leek[leek] === null) { debugC("canUseChip - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
 	if (!isChip(Chip)) { debugC("canUseChip - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
@@ -807,6 +818,18 @@ canUseChipOnCell = function (Chip, cell) {
 	var dist = getCellDistance(getCell(getLeek()), cell);
 	if (!(dist <= getChipMaxRange(Chip) && dist >= getChipMinRange(Chip))) return false;
 	if (isInlineChip(Chip) && !isOnSameLine(getCell(getLeek()), cell)) return false;
+	if (chipNeedLos(Chip) && !lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
+	if (getCooldown(Chip, getLeek()) > 0) return false;
+	return true;
+};
+
+global canUseChipOnCellFrom = function (Chip, cell, from) {
+	if (!isWeapon(weapon)) { debugC("canUseChipOnCellFrom - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
+	
+	
+	var dist = getCellDistance(from, cell);
+	if (!(dist <= getChipMaxRange(Chip) && dist >= getChipMinRange(Chip))) return false;
+	if (isInlineChip(Chip) && !isOnSameLine(from, cell)) return false;
 	if (chipNeedLos(Chip) && !lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
 	if (getCooldown(Chip, getLeek()) > 0) return false;
 	return true;
@@ -908,72 +931,42 @@ summon = function (chip, cell, ai) {
 	 return newLeek(getLevel(getLeek()), cell, true, ENTITY_BULB, getLeek(), getTurn(), lifeMax, lifeMax, strength, wisdom, agility, resistance, science, 0, 0, TPMax, MPMax, TPMax, MPMax, null, [], chips, [], []);
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+getWeaponEffectiveArea = function(weapon, cell, from) {
+	var tmp = getWeaponArea(weapon);
+
+	if (!canUseWeaponOnCellFrom(weapon, cell, from)) { debugC("getWeaponEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec l'arme " + weapon, color_text_error); return null; }
+
+	var Area = function (rayon, origine) {
+		var i = 0, toCheck = [origine], dist = 0, tmp, cells = [];
+   	 	cells[origine] = 0;
+   
+   		 while(dist < rayon) {
+        ++dist;
+        tmp = count(toCheck);
+        while(i < tmp) {
+            
+            if(cells[k] === null && _enemies[k] !== true) {
+                push(toCheck, k);
+                cells[k] = dist;
+            }
+            ++i;
+        }
+    }
+    return @cells;
+	}
+	if (tmp === AREA_POINT) {
+		Area(cell, 1);
+	}
+	if (tmp === AREA_CIRCLE_1) {
+		Area(cell, 1);
+	}
+	if (tmp === AREA_CIRCLE_2) {
+		Area(cell, 1);
+	}
+	if (tmp === AREA_CIRCLE_3) {
+		Area(cell, 1);
+	}
+	if (tmp === AREA_LASER_LINE) {
+
+	}
+};
