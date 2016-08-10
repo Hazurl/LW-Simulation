@@ -60,7 +60,7 @@ global OBSTACLES = [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  
 					0,  1,  0,  1,  0,  1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 					  0,  1,  1,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
 					0,  0,  1,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-					  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
+					  0,  0,  1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
 					0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 					  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
 					0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -105,8 +105,10 @@ global OBSTACLES = [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  
 //		SetFrequency (leek, frequency)  - Modifie la fréquence d'un poireau
 //		SetTP_TPMax (leek, TP, TPMax) - Modifie les TPs d'un poireau
 //		SetMP_MPMax (leek, MP, MPMax) - Modifie les MPs d'un poireau
+//		canUseChipOnCellFrom (Chip, cell, from)) - Retourne true si votre poireau peut attaquer depuis "from" sur "cell" avec la puce "chip"
+//		canUseWeaponOnCellFrom (weapon, cell, from) - Retourne true si votre poireau peut attaquer depuis "from" sur "cell" avec l'arme "weapon"
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
-//:: GLOBAL 
+//:: GLOBAL
 global ID_Leek = 1000;
 global _Leek = [];
 global _myID = null;
@@ -155,8 +157,8 @@ if (creatmyLeekFakeOnStart) {creatmyLeekFakeOnStart = false; CreateMyLeekFake();
 //:: INITAILISATION TERRAIN
 if (initialiseFunction) {initialiseFunction = false; INIATIALISATION_FONCTIONS();} //PARAMETRABLE !
 //:: DELETE LEEK AUTOMATIQUE
-var tmp = _DeleteAuto; _DeleteAuto = [];
-for (var delete in tmp) { if (delete[0](getTurn())) delete[1](); else push(_DeleteAuto, delete); }
+var foo = _DeleteAuto; _DeleteAuto = [];
+for (var delete in foo) { if (delete[0](getTurn())) delete[1](); else push(_DeleteAuto, delete); }
 //:: REINITIALISATION TP/MP...
 if (resetOnTurnStart) { //PARAMETRABLE !
 	for (var leek in _Leek) {
@@ -361,6 +363,29 @@ function SetMP_MPMax (leek, MP, MPMax) {
 	if (MP > MPMax || MPMax < 0) return false;
 	_Leek[leek]["MP"] = MP; _Leek[leek]["MPMax"] = MPMax; return true;
 }
+
+function  canUseWeaponOnCellFrom (weapon, cell, from) {
+	if (!isWeapon(weapon)) { debugC("canUseWeaponOnCellFrom - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
+	
+	
+	var dist = getCellDistance(from, cell);
+	if (!(dist <= getWeaponMaxRange(weapon) && dist >= getWeaponMinRange(weapon))) return false;
+	if (isInlineWeapon(weapon) && !isOnSameLine(from, cell)) return false;
+	if (!lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
+	return true;
+};
+
+function canUseChipOnCellFrom (Chip, cell, from) {
+	if (!isChip(Chip)) { debugC("canUseChipOnCellFrom - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
+	
+	
+	var dist = getCellDistance(from, cell);
+	if (!(dist <= getChipMaxRange(Chip) && dist >= getChipMinRange(Chip))) return false;
+	if (isInlineChip(Chip) && !isOnSameLine(from, cell)) return false;
+	if (chipNeedLos(Chip) && !lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
+	if (getCooldown(Chip, getLeek()) > 0) return false;
+	return true;
+};
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: FONCTIONS TERRAIN
 function INIATIALISATION_TERRAIN () {
@@ -408,151 +433,181 @@ getLeek = function () { //fonction crée dynamiquement pour pouvoir appeler l'an
 };
 
 getLevel = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getCell - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetLevel(leek); }
 	return _Leek[leek]["lvl"];
 };
 
 getCell = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getCell - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetCell(leek); }
 	return _Leek[leek]["cell"];
 };
 
 isAlly = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("isAlly - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastisAlly(leek); }
 	return _Leek[leek]["isAlly"];
 };
 
 isEnemy = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("isEnemy - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastisEnemy(leek); }
 	return !_Leek[leek]["isAlly"];
 };
 
 getLife = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getLife - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetLife(leek); }
 	return _Leek[leek]["life"];
 };
 
 getTotalLife = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getTotalLife - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetTotalLife(leek); }
 	return _Leek[leek]["lifeMax"];
 };
 
 getStrength = function (leek) { 
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getStrength - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetStrength(leek); }
 	return _Leek[leek]["strength"];
 };
 
 getWisdom = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getWisdom - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetWisdom(leek); }
 	return _Leek[leek]["wisdom"];
 };
 
 getAgility = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getAgility - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetAgility(leek); }
 	return _Leek[leek]["agility"];
 };
 
 getResistance = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getResistance - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetResistance(leek); }
 	return _Leek[leek]["resistance"];
 };
 
 getScience = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getScience - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetScience(leek); }
 	return _Leek[leek]["science"];
 };
 
 getMagic = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getMagic - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetMagic(leek); }
 	return _Leek[leek]["magic"];
 };
 
 getFrequency = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getFrequency - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetFrequency(leek); }
 	return _Leek[leek]["frequency"];
 };
 
 getTP = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getTP - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetTP(leek); }
 	return _Leek[leek]["TP"];
 };
 
 getMP = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getMP - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetMP(leek); }
 	return _Leek[leek]["MP"];
 };
 
 getTotalTP = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getTotalTP - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetTP(leek); }
 	return _Leek[leek]["TPMax"];
 };
 
 getTotalMP = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getTotalMP - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetMP(leek); }
 	return _Leek[leek]["MPMax"];
 };
 
 getWeapon = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getWeapon - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetWeapon(leek); }
 	return _Leek[leek]["currentWeapon"];
 };
 
 getWeapons = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getWeapons - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetWeapons(leek); }
 	return _Leek[leek]["weapons"];
 };
 
 getChips = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getChips - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetChips(leek); }
 	return _Leek[leek]["chips"];
 };
 
 isDead = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("isDead - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastisDead(leek); }
 	return (_Leek[leek]["life"] <= 0);
 };
 
 getType = function (entity) {
+	if (entity === null) return;
 	if (_Leek[entity] === null) { debugC("getType - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetType(entity); }
 	return _Leek[entity]["type"];
 };
 
 isSummon = function (entity) {
+	if (entity === null) return;
 	if (_Leek[entity] === null) { debugC("isSummon - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastisSummon(entity); }
 	return (typeOf(_Leek[entity]["summoner"] !== TYPE_NULL));
 };
 
 getSummoner = function (entity) {
+	if (entity === null) return;
 	if (_Leek[entity] === null) { debugC("getSummoner - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetSummoner(entity); }
 	return _Leek[entity]["summoner"];
 };
 
 getEffects = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getEffects - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetEffects(leek); }
 	return _Leek[leek]["effects"];
 };
 
 getLaunchedEffects = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getLaunchedEffects - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetLaunchedEffects(leek); }
 	return _Leek[leek]["lauchedEffect"];
 };
 
 getAbsoluteShield = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getAbsoluteShield - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetAbsoluteShield(leek); }
 	return (Effect_TotalValue(leek, EFFECT_ABSOLUTE_SHIELD) * (1 + getResistance(leek)/100));
 };
 
 getRelativeShield = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getRelativeShield - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetRelativeShield(leek); }
 	return (Effect_TotalValue(leek, EFFECT_RELATIVE_SHIELD) * (1 + getResistance(leek)/100));
 };
 
 getDamageReturn = function (leek) {
+	if (leek === null) return;
 	if (_Leek[leek] === null) { debugC("getDamageReturn - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetDamageReturn(leek); }
 	return (Effect_TotalValue(leek, EFFECT_DAMAGE_RETURN) * (1 + getAgility(leek)/100));
 };
 
 getBirthTurn = function (entity) {
+	if (entity === null) return;
 	if (_Leek[entity] === null) { debugC("getRelativeShield - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetBirthTurn(entity); }
 	return _Leek[entity]["birthTurn"];
 };
@@ -793,17 +848,6 @@ canUseWeaponOnCell = function (weapon, cell) {
 	return true;
 };
 
-global canUseWeaponOnCellFrom = function (weapon, cell, from) {
-	if (!isWeapon(weapon)) { debugC("canUseWeaponOnCellFrom - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
-	
-	
-	var dist = getCellDistance(from, cell);
-	if (!(dist <= getWeaponMaxRange(weapon) && dist >= getWeaponMinRange(weapon))) return false;
-	if (isInlineWeapon(weapon) && !isOnSameLine(from, cell)) return false;
-	if (!lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
-	return true;
-};
-
 canUseChip = function (Chip, leek) {
 	if (_Leek[leek] === null) { debugC("canUseChip - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
 	if (!isChip(Chip)) { debugC("canUseChip - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
@@ -818,18 +862,6 @@ canUseChipOnCell = function (Chip, cell) {
 	var dist = getCellDistance(getCell(getLeek()), cell);
 	if (!(dist <= getChipMaxRange(Chip) && dist >= getChipMinRange(Chip))) return false;
 	if (isInlineChip(Chip) && !isOnSameLine(getCell(getLeek()), cell)) return false;
-	if (chipNeedLos(Chip) && !lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
-	if (getCooldown(Chip, getLeek()) > 0) return false;
-	return true;
-};
-
-global canUseChipOnCellFrom = function (Chip, cell, from) {
-	if (!isWeapon(weapon)) { debugC("canUseChipOnCellFrom - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
-	
-	
-	var dist = getCellDistance(from, cell);
-	if (!(dist <= getChipMaxRange(Chip) && dist >= getChipMinRange(Chip))) return false;
-	if (isInlineChip(Chip) && !isOnSameLine(from, cell)) return false;
 	if (chipNeedLos(Chip) && !lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
 	if (getCooldown(Chip, getLeek()) > 0) return false;
 	return true;
@@ -932,41 +964,176 @@ summon = function (chip, cell, ai) {
 };
 
 getWeaponEffectiveArea = function(weapon, cell, from) {
-	var tmp = getWeaponArea(weapon);
-
-	if (!canUseWeaponOnCellFrom(weapon, cell, from)) { debugC("getWeaponEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec l'arme " + weapon, color_text_error); return null; }
-
-	var Area = function (rayon, origine) {
+	if (!isWeapon(weapon)) { debugC("getWeaponEffectiveArea - Erreur l'arme donnée n'en est pas une.", color_text_error); return []; }
+	if (!canUseWeaponOnCellFrom(weapon, cell, from)) { debugC("getWeaponEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec l'arme " + weapon, color_text_error); return []; }
+	
+	var areaWeapon = getWeaponArea(weapon);
+	var Area = function (@origine, @rayon) {
 		var i = 0, toCheck = [origine], dist = 0, tmp, cells = [];
    	 	cells[origine] = 0;
    
-   		 while(dist < rayon) {
-        ++dist;
-        tmp = count(toCheck);
-        while(i < tmp) {
-            
-            if(cells[k] === null && _enemies[k] !== true) {
-                push(toCheck, k);
-                cells[k] = dist;
-            }
-            ++i;
-        }
-    }
-    return @cells;
+   		while(dist < rayon) {
+	        ++dist;
+	        tmp = count(toCheck);
+			while(i < tmp) {
+				var k = getCellFromXY(getCellX(toCheck[i])+1, getCellY(toCheck[i]));
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				k = getCellFromXY(getCellX(toCheck[i])-1, getCellY(toCheck[i]));
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])+1);
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])-1);
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				++i;
+			}
+		}
+		tmp = [];
+		for (var celltmp : var d in cells) if (!isObstacle(celltmp)) push(tmp, celltmp);
+    	return @tmp;
+	};
+	if (areaWeapon === AREA_POINT) {
+		return Area(cell, 0);
 	}
-	if (tmp === AREA_POINT) {
-		Area(cell, 1);
+	if (areaWeapon === AREA_CIRCLE_1) {
+		return Area(cell, 1);
 	}
-	if (tmp === AREA_CIRCLE_1) {
-		Area(cell, 1);
+	if (areaWeapon === AREA_CIRCLE_2) {
+		return Area(cell, 2);
 	}
-	if (tmp === AREA_CIRCLE_2) {
-		Area(cell, 1);
+	if (areaWeapon === AREA_CIRCLE_3) {
+		return Area(cell, 3);
 	}
-	if (tmp === AREA_CIRCLE_3) {
-		Area(cell, 1);
-	}
-	if (tmp === AREA_LASER_LINE) {
-
+	if (areaWeapon === AREA_LASER_LINE) {
+		var dx = ((getCellX(cell) < getCellX(from))? -1 : (getCellX(cell) > getCellX(from))? 1 :0);
+		var dy =((getCellY(cell) < getCellY(from))? -1 : (getCellY(cell) > getCellY(from))? 1 :0);
+		var celltmp = cell;
+		var cellstmp = [];
+		do {
+			push(cellstmp, celltmp);
+			celltmp = getCellFromXY(getCellX(celltmp) + dx, getCellY(celltmp) + dy);
+		} while (!isObstacle(celltmp));
+		
+		return cellstmp;
 	}
 };
+
+getChipEffectiveArea = function(chip, cell, from) {
+	if (!isChip(chip)) { debugC("getChipEffectiveArea - Erreur la puce donnée n'en est pas une.", color_text_error); return []; }
+	if (!canUseChipOnCellFrom(chip, cell, from)) { debugC("getChipEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec la puce " + chip, color_text_error); return []; }
+	var areaChip = getChipArea(chip);
+	var Area = function (@origine, @rayon) {
+		var i = 0, toCheck = [origine], dist = 0, tmp, cells = [];
+   	 	cells[origine] = 0;
+   
+   		while(dist < rayon) {
+	        ++dist;
+	        tmp = count(toCheck);
+			while(i < tmp) {
+				var k = getCellFromXY(getCellX(toCheck[i])+1, getCellY(toCheck[i]));
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				k = getCellFromXY(getCellX(toCheck[i])-1, getCellY(toCheck[i]));
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])+1);
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])-1);
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				++i;
+			}
+		}
+		tmp = [];
+		for (var celltmp : var d in cells) if (!isObstacle(celltmp)) push(tmp, celltmp);
+    	return @tmp;
+	};
+	if (areaChip === AREA_POINT) {
+		return Area(cell, 0);
+	}
+	if (areaChip === AREA_CIRCLE_1) {
+		return Area(cell, 1);
+	}
+	if (areaChip === AREA_CIRCLE_2) {
+		return Area(cell, 2);
+	}
+	if (areaChip === AREA_CIRCLE_3) {
+		return Area(cell, 3);
+	}
+	if (areaChip === AREA_LASER_LINE) {
+		var dx = ((getCellX(cell) < getCellX(from))? -1 : (getCellX(cell) > getCellX(from))? 1 :0);
+		var dy =((getCellY(cell) < getCellY(from))? -1 : (getCellY(cell) > getCellY(from))? 1 :0);
+		var celltmp = cell;
+		var cellstmp = [];
+		do {
+			push(cellstmp, celltmp);
+			celltmp = getCellFromXY(getCellX(celltmp) + dx, getCellY(celltmp) + dy);
+		} while (!isObstacle(celltmp));
+		
+		return cellstmp;
+	}
+};
+
+getWeaponTargets = function (weapon, cell) {
+	if (!isWeapon(weapon)) { debugC("getWeaponTargets - Erreur l'arme donnée n'en est pas une.", color_text_error); return []; }
+	
+	var tmp = [];
+	for(var celltmp in getWeaponEffectiveArea(weapon, cell, getCell(getLeek()))) {
+		var leek = getLeekOnCell(celltmp);
+		if (leek !== null) push(tmp, leek);
+	}
+	
+	return tmp;
+};
+
+getChipTargets = function (chip, cell) {
+	if (!isChip(chip)) { debugC("getChipTargets - Erreur la puce donnée n'en est pas une.", color_text_error); return []; }
+	
+	var tmp = [];
+	for(var celltmp in getChipEffectiveArea(chip, cell, getCell(getLeek()))) {
+		var leek = getLeekOnCell(celltmp);
+		if (leek !== null) push(tmp, leek);
+	}
+	
+	return tmp;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
