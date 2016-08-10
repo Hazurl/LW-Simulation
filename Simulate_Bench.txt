@@ -371,7 +371,7 @@ function  canUseWeaponOnCellFrom (weapon, cell, from) {
 	var dist = getCellDistance(from, cell);
 	if (!(dist <= getWeaponMaxRange(weapon) && dist >= getWeaponMinRange(weapon))) return false;
 	if (isInlineWeapon(weapon) && !isOnSameLine(from, cell)) return false;
-	if (!lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
+	if (!lineOfSight(from,cell, getLeek())) return false;
 	return true;
 };
 
@@ -386,6 +386,30 @@ function canUseChipOnCellFrom (Chip, cell, from) {
 	if (getCooldown(Chip, getLeek()) > 0) return false;
 	return true;
 };
+
+function Area (origine, rayon) {
+		var i = 0, toCheck = [origine], dist = 0, tmp, cells = [];
+   	 	cells[origine] = 0;
+   
+   		while(dist < rayon) {
+	        ++dist;
+	        tmp = count(toCheck);
+			while(i < tmp) {
+				var k = getCellFromXY(getCellX(toCheck[i])+1, getCellY(toCheck[i]));
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				k = getCellFromXY(getCellX(toCheck[i])-1, getCellY(toCheck[i]));
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])+1);
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])-1);
+				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
+				++i;
+			}
+		}
+		tmp = [];
+		for (var celltmp : var d in cells) if (!isObstacle(celltmp)) push(tmp, celltmp);
+    	return @tmp;
+	};
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: FONCTIONS TERRAIN
 function INIATIALISATION_TERRAIN () {
@@ -968,29 +992,7 @@ getWeaponEffectiveArea = function(weapon, cell, from) {
 	if (!canUseWeaponOnCellFrom(weapon, cell, from)) { debugC("getWeaponEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec l'arme " + weapon, color_text_error); return []; }
 	
 	var areaWeapon = getWeaponArea(weapon);
-	var Area = function (@origine, @rayon) {
-		var i = 0, toCheck = [origine], dist = 0, tmp, cells = [];
-   	 	cells[origine] = 0;
-   
-   		while(dist < rayon) {
-	        ++dist;
-	        tmp = count(toCheck);
-			while(i < tmp) {
-				var k = getCellFromXY(getCellX(toCheck[i])+1, getCellY(toCheck[i]));
-				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
-				k = getCellFromXY(getCellX(toCheck[i])-1, getCellY(toCheck[i]));
-				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
-				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])+1);
-				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
-				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])-1);
-				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
-				++i;
-			}
-		}
-		tmp = [];
-		for (var celltmp : var d in cells) if (!isObstacle(celltmp)) push(tmp, celltmp);
-    	return @tmp;
-	};
+	
 	if (areaWeapon === AREA_POINT) {
 		return Area(cell, 0);
 	}
@@ -1021,29 +1023,7 @@ getChipEffectiveArea = function(chip, cell, from) {
 	if (!isChip(chip)) { debugC("getChipEffectiveArea - Erreur la puce donnée n'en est pas une.", color_text_error); return []; }
 	if (!canUseChipOnCellFrom(chip, cell, from)) { debugC("getChipEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec la puce " + chip, color_text_error); return []; }
 	var areaChip = getChipArea(chip);
-	var Area = function (@origine, @rayon) {
-		var i = 0, toCheck = [origine], dist = 0, tmp, cells = [];
-   	 	cells[origine] = 0;
-   
-   		while(dist < rayon) {
-	        ++dist;
-	        tmp = count(toCheck);
-			while(i < tmp) {
-				var k = getCellFromXY(getCellX(toCheck[i])+1, getCellY(toCheck[i]));
-				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
-				k = getCellFromXY(getCellX(toCheck[i])-1, getCellY(toCheck[i]));
-				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
-				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])+1);
-				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
-				k = getCellFromXY(getCellX(toCheck[i]), getCellY(toCheck[i])-1);
-				if(k !== null && cells[k] === null) {  push(toCheck, k);  cells[k] = dist;  }
-				++i;
-			}
-		}
-		tmp = [];
-		for (var celltmp : var d in cells) if (!isObstacle(celltmp)) push(tmp, celltmp);
-    	return @tmp;
-	};
+	
 	if (areaChip === AREA_POINT) {
 		return Area(cell, 0);
 	}
@@ -1094,15 +1074,93 @@ getChipTargets = function (chip, cell) {
 	return tmp;
 };
 
+getCellsToUseWeaponOnCell = function (weapon, cell, ignoredCells) {
+	var area = Area(cell, getWeaponMaxRange(weapon));
+	var retour = [];
+	mark(cell, COLOR_GREEN);
+	for (var cellIn in area) {
+		if (!canUseWeaponOnCellFrom(weapon, cellIn, cell)) continue;
+		if (search(ignoredCells, cellIn) !== null) continue;
+		push(retour, cellIn);
+	}
+	return retour;
+};
 
+getCellsToUseWeapon = function (weapon, leek, ignoredCells) {
+	return getCellsToUseWeaponOnCell(weapon, getCell(leek), ignoredCells);
+};
 
+getCellToUseWeapon = function (weapon, leek, ignoredCells) {
+	var NearestCell = null;
+	var dist = null;
+	
+	for (var cell in getCellsToUseWeaponOnCell(weapon, getCell(leek), ignoredCells)) {
+		var d = getCellDistance(cell, getCell(getLeek()));
+		if (NearestCell === null || d < dist) {
+			NearestCell = cell;
+			dist = d;
+		}
+	}
+	return NearestCell;
+};
 
+getCellToUseWeaponOnCell = function (weapon, cell, ignoredCells) {
+	var NearestCell = null;
+	var dist = null;
+	
+	for (var celltmp in getCellsToUseWeaponOnCell(weapon, cell, ignoredCells)) {
+		var d = getCellDistance(celltmp, getCell(getLeek()));
+		if (NearestCell === null || d < dist) {
+			NearestCell = celltmp;
+			dist = d;
+		}
+	}
+	return NearestCell;
+};
 
+getCellsToUseChipOnCell = function (Chip, cell, ignoredCells) {
+	var area = Area(cell, getChipMaxRange(Chip));
+	var retour = [];
+	mark(cell, COLOR_GREEN);
+	for (var cellIn in area) {
+		if (!canUseChipOnCellFrom(Chip, cellIn, cell)) continue;
+		if (search(ignoredCells, cellIn) !== null) continue;
+		push(retour, cellIn);
+	}
+	return retour;
+};
 
+getCellsToUseChip = function (Chip, leek, ignoredCells) {
+	return getCellsToUseChipOnCell(Chip, getCell(leek), ignoredCells);
+};
 
+getCellToUseChip = function (Chip, leek, ignoredCells) {
+	var NearestCell = null;
+	var dist = null;
+	
+	for (var cell in getCellsToUseChipOnCell(Chip, getCell(leek), ignoredCells)) {
+		var d = getCellDistance(cell, getCell(getLeek()));
+		if (NearestCell === null || d < dist) {
+			NearestCell = cell;
+			dist = d;
+		}
+	}
+	return NearestCell;
+};
 
-
-
+getCellToUseChipOnCell = function (Chip, cell, ignoredCells) {
+	var NearestCell = null;
+	var dist = null;
+	
+	for (var celltmp in getCellsToUseChipOnCell(Chip, cell, ignoredCells)) {
+		var d = getCellDistance(celltmp, getCell(getLeek()));
+		if (NearestCell === null || d < dist) {
+			NearestCell = celltmp;
+			dist = d;
+		}
+	}
+	return NearestCell;
+};
 
 
 
