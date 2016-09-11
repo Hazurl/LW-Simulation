@@ -180,40 +180,38 @@ function DisplayMap () {
 	mark(getCell(getLeek()), color_map_myLeek);
 }
 
-function DisplayLeek (id) {
-	if (_Leek[id] === null) return false;
+function DisplayLeek (@id) {
+	if (_Leek[id] === null) return @false;
 	debugC("Le "+((getType(id)===ENTITY_BULB)?"bulbe":"poireau")+" d'ID ("+id+") " +((isDead(id))?"est mort":("a " +getLife(id)+" sur "+getTotalLife(id)+" pdv maximum. Il est actuelement sur la cellule : " + getCell(id))), color_text_describe);
 }
 
-function DeleteLeekOnTurn (leek, turn) {
-	if (_Leek[leek] === null) { debugC("deleteLeek - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return ; }
-	if (turn <= getTurn()) return;
-	push(_DeleteAuto, [function (curTurn) {if (curTurn === turn) return true; return false;}, function () {deleteLeek(leek);}]);
+function DeleteLeekOnTurn (@leek, @turn) {
+	return ((_Leek[leek] === null || turn <= getTurn())? @false : !push(_DeleteAuto, [function (curTurn) {if (curTurn === turn) return true; return false;}, function () {deleteLeek(leek);}]));
 }
 
-function getNewID () {return ID_Leek++;}
+function getNewID () {return @ID_Leek++;}
 
-function MyLeekCustom (lvl, cell, life, lifeMax, strength, wisdom, agility, resistance, science, magic, frequency, TP, MP, TPMax, MPMax, currentWeapon, weapons, chips, effects, lauchedEffect) {
+function MyLeekCustom (@lvl, @cell, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
 	var id = newLeek(lvl, cell, true, ENTITY_LEEK, null, 1, life, lifeMax, strength, wisdom, agility, resistance, science, magic, frequency, TP, MP, TPMax, MPMax, currentWeapon, weapons, chips, effects, lauchedEffect);
 	_myID = id;
-	return id;
+	return @id;
 }
 
 function CreateMyLeekFake () {
 	var id = newLeek(getLevel(getLeek()), getCell(getLeek()), true, ENTITY_LEEK, null, getTurn(), getLife(getLeek()), getTotalLife(getLeek()), getStrength(getLeek()), getWisdom(getLeek()), getAgility(getLeek()), getResistance(getLeek()), getScience(getLeek()), getMagic(getLeek()), getFrequency(getLeek()), getTP(getLeek()), getMP(getLeek()), getTotalTP(getLeek()), getTotalMP(getLeek()), getWeapon(getLeek()), getWeapons(getLeek()), getChips(getLeek()), getEffects(getLeek()), getLaunchedEffects(getLeek()));
 	_myID = id;
-	return id;
+	return @id;
 } 
 
-function DefaultMyLeekCreation (cell, TPMax, MPMax, weapon, weapons, chips) {
-	return MyLeekCustom(1, cell, 1000, 1000, 0, 0, 0, 0, 0, 0, 100, TPMax, MPMax, TPMax, MPMax, weapon, weapons, chips, [], []);
+function DefaultMyLeekCreation (@cell, @TPMax, @MPMax, @weapon, @weapons, @chips) {
+	return @MyLeekCustom(1, cell, 1000, 1000, 0, 0, 0, 0, 0, 0, 100, TPMax, MPMax, TPMax, MPMax, weapon, weapons, chips, [], []);
 }
 
-function DefaultLeekCreation (cell, TPMax, MPMax, weapon, weapons, chips) {
-	return newLeek(1, cell, false, ENTITY_LEEK, null, getTurn(), 1000, 1000, 0, 0, 0, 0, 0, 0, 100, TPMax, MPMax, TPMax, MPMax, weapon, weapons, chips, [], []);
+function DefaultLeekCreation (@cell, @TPMax, @MPMax, @weapon, @weapons, @chips) {
+	return @newLeek(1, cell, false, ENTITY_LEEK, null, getTurn(), 1000, 1000, 0, 0, 0, 0, 0, 0, 100, TPMax, MPMax, TPMax, MPMax, weapon, weapons, chips, [], []);
 }
 
-function newLeek (lvl, cell, is_Ally, type, summoner, birthTurn, life, lifeMax, strength, wisdom, agility, resistance, science, magic, frequency, TP, MP, TPMax, MPMax, currentWeapon, weapons, chips, effects, lauchedEffect) {
+function newLeek (@lvl, @cell, @is_Ally, @type, @summoner, @birthTurn, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
 
 // Première vérification : le type des paramètres
 	if (typeOf(lvl) != TYPE_NUMBER || typeOf(cell) != TYPE_NUMBER || typeOf(is_Ally) != TYPE_BOOLEAN || typeOf(type) != TYPE_NUMBER || (typeOf(summoner) != TYPE_NUMBER && typeOf(summoner) != TYPE_NULL)  || typeOf(birthTurn) != TYPE_NUMBER || typeOf(life) != TYPE_NUMBER || typeOf(lifeMax) != TYPE_NUMBER || typeOf(strength) != TYPE_NUMBER || typeOf(wisdom) != TYPE_NUMBER || typeOf(agility) != TYPE_NUMBER || typeOf(resistance) != TYPE_NUMBER || typeOf(science) != TYPE_NUMBER || typeOf(magic) != TYPE_NUMBER || typeOf(frequency) != TYPE_NUMBER || typeOf(TP) != TYPE_NUMBER || typeOf(MP) != TYPE_NUMBER || typeOf(TPMax) != TYPE_NUMBER || typeOf(MPMax) != TYPE_NUMBER || (typeOf(currentWeapon) != TYPE_NUMBER && typeOf(currentWeapon) != TYPE_NULL) || typeOf(weapons) != TYPE_ARRAY || typeOf(chips) != TYPE_ARRAY || typeOf(effects) != TYPE_ARRAY || typeOf(lauchedEffect) != TYPE_ARRAY) { debugC("newLeek - Erreur l'un des paramètres n'est pas du bon type", color_text_error); return null; }
@@ -236,135 +234,130 @@ function newLeek (lvl, cell, is_Ally, type, summoner, birthTurn, life, lifeMax, 
 
 	var id = getNewID();
 	debugC("Leek ("+id+") succesful created !", color_text_created);
-	_Leek[id] = ["lvl" : lvl, "cell" : cell, "isAlly" : is_Ally, "type" : type, "birthTurn" : birthTurn, "life" : life, "lifeMax" : lifeMax, "strength" : strength, "wisdom" : wisdom, "agility" : agility, "resistance" : resistance, "science" : science, "magic" : magic, "frequency" : frequency, "TP" : TP, "MP" : MP, "TPMax" : TPMax, "MPMax" : MPMax, "currentWeapon" : currentWeapon, "weapons" : weapons, "chips" : chips, "effects" : effects, "lauchedEffect" : lauchedEffect];
-	return id;
+	_Leek[id] = @["lvl" : lvl, "cell" : cell, "isAlly" : is_Ally, "type" : type, "birthTurn" : birthTurn, "life" : life, "lifeMax" : lifeMax, "strength" : strength, "wisdom" : wisdom, "agility" : agility, "resistance" : resistance, "science" : science, "magic" : magic, "frequency" : frequency, "TP" : TP, "MP" : MP, "TPMax" : TPMax, "MPMax" : MPMax, "currentWeapon" : currentWeapon, "weapons" : weapons, "chips" : chips, "effects" : effects, "lauchedEffect" : lauchedEffect];
+	return @id;
 }
 
-function deleteLeek (id) {
-	if (_Leek[id] === null) { debugC("deleteLeek - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return ; }
-	debugC("Leek ("+id+") succesful deleted !", color_text_deleted);
-	removeKey(_Leek, id);
+function deleteLeek (@id) {
+	return @(_Leek[id] === null)? (!!debugC("deleteLeek - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error)) : (!debugC("Leek ("+id+") succesful deleted !", color_text_deleted) && !removeKey(_Leek, id));
 }
 
-function AddEffectTo (leek, type, value, caster_id, turn, critical, item_id, target_id) {
+function AddEffectTo (@leek, @type, @value, @caster_id, @turn, @critical, @item_id, @target_id) {
 	if (typeOf(leek) != TYPE_NUMBER || typeOf(type) != TYPE_NUMBER || typeOf(caster_id) != TYPE_NUMBER || typeOf(turn) != TYPE_NUMBER || typeOf(critical) != TYPE_BOOLEAN || typeOf(item_id) != TYPE_NUMBER || typeOf(target_id) != TYPE_NUMBER) { debugC("AddEffectTo - Erreur l'un des paramètre n'est pas du bon type", color_text_error); return null; }
 	if (_Leek[leek] === null) { debugC("AddEffectTo - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return ; }
 	push(_Leek[leek]["effects"], [type, value, caster_id, turn, critical, item_id, target_id]);
 }
 
-function AddLaunchedEffectTo (leek, type, value, caster_id, turn, critical, item_id, target_id) {
+function AddLaunchedEffectTo (@leek, @type, @value, @caster_id, @turn, @critical, @item_id, @target_id) {
 	if (typeOf(leek) != TYPE_NUMBER || typeOf(type) != TYPE_NUMBER || typeOf(caster_id) != TYPE_NUMBER || typeOf(turn) != TYPE_NUMBER || typeOf(critical) != TYPE_BOOLEAN || typeOf(item_id) != TYPE_NUMBER || typeOf(target_id) != TYPE_NUMBER) { debugC("AddEffectTo - Erreur l'un des paramètre n'est pas du bon type", color_text_error); return null; }
 	if (_Leek[leek] === null) { debugC("AddLaunchedEffectTo - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return ; }
 	push(_Leek[leek]["lauchedEffect"], [type, value, caster_id, turn, critical, item_id, target_id]);
 }
 
-function Effect_TotalValue (leek, type_value) {
+function Effect_TotalValue (@leek, @type_value) {
 	if (_Leek[leek] === null) { debugC("Effect_TotalValue - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return 0; }
 	var tmp = 0;
 	for (var effet in getEffects(leek)) if (effet[0] === type_value) tmp += effet[1];
-	return tmp;
+	return @tmp;
 }
 
-function Generate_Terrain (obstacles) {
+function Generate_Terrain (@obstacles) {
 	for (var i = 0; i<count(obstacles); i++) if (obstacles[i] == 1) _TerrainContent[i] = CELL_OBSTACLE;
 }
 
-function ChangeWeapon (leek, weapon) {
-	if (_Leek[leek] === null) { debugC("ChangeWeapon - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
-	
-	if (search(_Leek[leek]["weapons"], weapon) === null || !isWeapon(weapon)) return false;
-	_Leek[leek]["currentWeapon"] = weapon; return true;
+function ChangeWeapon (@leek, @weapon) {
+	return ((_Leek[leek] === null)? debugC("ChangeWeapon - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error) : ((!inArray(_Leek[leek]["weapons"], weapon)|| !isWeapon(weapon))? @false : !(_Leek[leek]["currentWeapon"] = weapon)));
 }
 
-function SetCell (leek, cell) {
+function SetCell (@leek, @cell) {
 	if (_Leek[leek] === null) { debugC("ChangeWeapon - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(cell) !== TYPE_NUMBER || cell < 0 || cell > 612 || !isEmptyCell(cell)) return false;
 	_Leek[leek]["cell"] = cell; return true;
 }
 
-function SetLevel (leek, lvl) {
+function SetLevel (@leek, @lvl) {
 	if (_Leek[leek] === null) { debugC("SetLevel - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(lvl) !== TYPE_NUMBER || lvl < 1 || lvl > 301) return false;
 	_Leek[leek]["lvl"] = lvl; return true;
 }
 
-function SetType_Summoner (leek, type, summoner) {
+function SetType_Summoner (@leek, @type, @summoner) {
 	if (_Leek[leek] === null) { debugC("SetType_Summoner - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (type !== ENTITY_BULB && type !== ENTITY_LEEK) return false;
 	if (((summoner !== null || _Leek[summoner] === null) && type === ENTITY_LEEK) || (_Leek[summoner] === null && type === ENTITY_BULB)) return false;
 	_Leek[leek]["summoner"] = summoner; _Leek[leek]["type"] = type; return true;
 }
 
-function SetBirthTurn (leek, birthTurn) {
+function SetBirthTurn (@leek, @birthTurn) {
 	if (_Leek[leek] === null) { debugC("SetBirthTurn - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (birthTurn < 1) return false;
 	_Leek[leek]["birthTurn"] = birthTurn; return true;
 }
 
-function SetLife_LifeMax (leek, life, lifeMax) {
+function SetLife_LifeMax (@leek, @life, @lifeMax) {
 	if (_Leek[leek] === null) { debugC("SetLife_LifeMax - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(life) != TYPE_NUMBER || typeOf(lifeMax) != TYPE_NUMBER) return false;
 	if (lifeMax < life) return false;
 	_Leek[leek]["life"] = life; _Leek[leek]["lifeMax"] = lifeMax; return true;
 }
 
-function SetStrength (leek, strength) {
+function SetStrength (@leek, @strength) {
 	if (_Leek[leek] === null) { debugC("SetStrength - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(strength) != TYPE_NUMBER) return false;
 	_Leek[leek]["strength"] = strength; return true;
 }
 
-function SetWisdom (leek, wisdom) {
+function SetWisdom (@leek, @wisdom) {
 	if (_Leek[leek] === null) { debugC("SetWisdom - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(wisdom) != TYPE_NUMBER) return false;
 	_Leek[leek]["wisdom"] = wisdom; return true;
 }
 
-function SetAgility (leek, agility) {
+function SetAgility (@leek, @agility) {
 	if (_Leek[leek] === null) { debugC("SetAgility - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(agility) != TYPE_NUMBER) return false;
 	_Leek[leek]["agility"] = agility; return true;
 }
 
-function SetResistance (leek, resistance) {
+function SetResistance (@leek, @resistance) {
 	if (_Leek[leek] === null) { debugC("SetResistance - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(resistance) != TYPE_NUMBER) return false;
 	_Leek[leek]["resistance"] = resistance; return true;
 }
 
-function SetScience (leek, science) {
+function SetScience (@leek, @science) {
 	if (_Leek[leek] === null) { debugC("SetScience - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(science) != TYPE_NUMBER) return false;
 	_Leek[leek]["science"] = science; return true;
 }
 
-function SetMagic (leek, magic) {
+function SetMagic (@leek, @magic) {
 	if (_Leek[leek] === null) { debugC("SetMagic - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(magic) != TYPE_NUMBER) return false;
 	_Leek[leek]["magic"] = magic; return true;
 }
 
-function SetFrequency (leek, frequency) {
+function SetFrequency (@leek, @frequency) {
 	if (_Leek[leek] === null) { debugC("SetFrequency - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(frequency) != TYPE_NUMBER || frequency < 0) return false;
 	_Leek[leek]["frequency"] = frequency; return true;
 }
 
-function SetTP_TPMax (leek, TP, TPMax) {
+function SetTP_TPMax (@leek, @TP, @TPMax) {
 	if (_Leek[leek] === null) { debugC("SetTP_TPMax - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(TP) != TYPE_NUMBER || typeOf(TPMax) != TYPE_NUMBER) return false;
 	if (TP > TPMax || TPMax < 0) return false;
 	_Leek[leek]["TP"] = TP; _Leek[leek]["TPMax"] = TPMax; return true;
 }
 
-function SetMP_MPMax (leek, MP, MPMax) {
+function SetMP_MPMax (@leek, @MP, @MPMax) {
 	if (_Leek[leek] === null) { debugC("SetMP_MPMax - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return false; }
 	if (typeOf(MP) != TYPE_NUMBER || typeOf(MPMax) != TYPE_NUMBER) return false;
 	if (MP > MPMax || MPMax < 0) return false;
 	_Leek[leek]["MP"] = MP; _Leek[leek]["MPMax"] = MPMax; return true;
 }
 
-function  canUseWeaponOnCellFrom (weapon, cell, from) {
+function  canUseWeaponOnCellFrom (@weapon, @cell, @from) {
 	if (!isWeapon(weapon)) { debugC("canUseWeaponOnCellFrom - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
 	
 	
@@ -375,7 +368,7 @@ function  canUseWeaponOnCellFrom (weapon, cell, from) {
 	return true;
 };
 
-function canUseChipOnCellFrom (Chip, cell, from) {
+function canUseChipOnCellFrom (@Chip, @cell, @from) {
 	if (!isChip(Chip)) { debugC("canUseChipOnCellFrom - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
 	
 	
@@ -387,7 +380,7 @@ function canUseChipOnCellFrom (Chip, cell, from) {
 	return true;
 };
 
-function Area (origine, rayon) {
+function Area (@origine, @rayon) {
 		var i = 0, toCheck = [origine], dist = 0, tmp, cells = [];
    	 	cells[origine] = 0;
    
