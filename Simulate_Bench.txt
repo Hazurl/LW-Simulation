@@ -1,4 +1,3 @@
-// Pour tester le commit
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* CREATED BY HAZURL...
 Ce script vous permet de simuler une ou plusieurs situation(s), il permet notament de :
@@ -9,11 +8,11 @@ Tout ceci dans le but d'optimiser ces fonctions tout en gardant la même configu
 
 NOTE :
 	:: Les fonctions de la catégorie "poireau" de la doc peuvent être utilisé avec des poireaux existants cependant une erreur est affiché, si cela étais votre choix, ignorer là.
-	:: Dans la même optique, pour créer un poireau à son image les anciennes fonctions sont nécéssaires, en utilisant "creatmyLeekFakeOnStart" vous eviter les erreurs (contrairement à si vous appeler la fonction CreateMyLeekFake, les erreurs s'afficheront).
+	:: Dans la même optique, pour créer un poireau à son image les anciennes fonctions sont nécéssaires, en utilisant "CREATMYLEEKFAKEONSTART" vous eviter les erreurs (contrairement à si vous appeler la fonction CreateMyLeekFake, les erreurs s'afficheront).
 	:: Pour creer votre poireau, deux fonction s'offre à vous : CreateMyLeekFake qui crée un poireau à votre image (sur la même position) ou MyLeekCustom avec cette fonctions vous avez le choix pour chaque caractéristiques sauf certain qui reste automatique (comme le type ENTITY_LEEK)
 */
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
-//:: CONSTANTE
+//:: CONSTANTE DE RETOUR, AFIN DE SIMPLIFIER LE CODES ERREURS
 global SIM_SUCCESS = 1;
 
 global SIM_ERR_ID = -1;
@@ -22,29 +21,31 @@ global SIM_ERR_PARAM_DATARANGE = -3;
 
 //:: PARAMETRE
 //Couleur pour les displays :
-global color_map_obstacle = getColor(255, 255, 255); // Obstacle sur la carte
-global color_map_empty = getColor(0, 0, 0); // Cellule vide
-global color_map_myLeek = getColor(0, 150, 255); // cellule de votre poireau
-global color_map_enemy = COLOR_RED; // Cellules des enemies
-global color_map_ally = COLOR_BLUE; // Cellules des alliés
+global COLOR_MAP_OBSTACLE = getColor(255, 255, 255); // Obstacle sur la carte
+global COLOR_MAP_EMPTY = getColor(0, 0, 0); // Cellule vide
+global COLOR_MAP_MYLEEK = getColor(0, 150, 255); // cellule de votre poireau
+global COLOR_MAP_ENEMY = COLOR_RED; // Cellules des enemies
+global COLOR_MAP_ALLY = COLOR_BLUE; // Cellules des alliés
 
-global color_text_describe = getColor(150, 0, 150); // Debug pour décrire les poireaux
-global color_text_created = getColor(0, 180, 0); // Debug pour afficher la création d'un poireau'
-global color_text_deleted = getColor(255, 150, 0); // Debug pour la destruction d'un poireau
-global color_text_error = getColor(200, 0, 0); // Debug pour les erreurs
+global COLOR_TEXT_DESCRIBE = getColor(150, 0, 150); // Debug pour décrire les poireaux
+global COLOR_TEXT_CREATED = getColor(0, 180, 0); // Debug pour afficher la création d'un poireau'
+global COLOR_TEXT_DELETED = getColor(255, 150, 0); // Debug pour la destruction d'un poireau
+global COLOR_TEXT_ERROR = getColor(200, 0, 0); // Debug pour les erreurs
 
+// Indique le tour ou les fonctions sont initialise
+global TURN_TO_INITIALISE = 1;
 // Dans le cas où la cellule est occupé par un obstacles, le poireau n'est pas crée
-global creatmyLeekFakeOnStart = false; //True si vous voulez que votre poireau soit crée au lancement de la partie (evite certains msg d'erreur)
+global CREATMYLEEKFAKEONSTART = false; //True si vous voulez que votre poireau soit crée au lancement de la partie (evite certains msg d'erreur)
 
-global resetOnTurnStart = false; //True si vous voulez remetre les TPs/MPs... à leur valeur par défaut (TotalTP/TotalMP...)
-global initialiseFunction = true; //True si vous voulez utiliser les fonctions natives de simulations
+global RESETONTURNSTART = false; //True si vous voulez remetre les TPs/MPs... à leur valeur par défaut (TotalTP/TotalMP...)
+global INITIALISEFUNCTION = true; //True si vous voulez utiliser les fonctions natives de simulations
 
-global simulateTP = false; //True si vous voulez retirer des TPs lors d'actions en necessitant
-global simulateMP = false; //True si vous voulez retirer des MPs lors d'actions en necessitant
+global SIMULATETP = false; //True si vous voulez retirer des TPs lors d'actions en necessitant
+global SIMULATEMP = false; //True si vous voulez retirer des MPs lors d'actions en necessitant
 
 // Carte des obstacles : Veuillez renseigner : 0 pour une cellule vide / 1 pour un obstacle (les poireaux sont à placer au moment de leur création)
-global initialiseTerrain = true; //True si vous voulez utiliser la map du combat, pas c'elle généré...
-global useThisMapGeneration = true; //True si vous voulez utiliser ce tableau :
+global INITIALISETERRAIN = true; //True si vous voulez utiliser la map du combat, pas c'elle généré...
+global USETHISMAPGENERATION = true; //True si vous voulez utiliser ce tableau :
 global OBSTACLES; OBSTACLES = @[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 					  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
 					0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -156,42 +157,44 @@ global _TerrainContent = []; if (getTurn() == 1) fill(_TerrainContent, CELL_EMPT
 global _OPERATIONS = 0;
 global _DeleteAuto = [];
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
-//:: INITAILISATION TERRAIN
-if (initialiseTerrain) {initialiseTerrain = false; INIATIALISATION_TERRAIN(); //PARAMETRABLE !
-//:: CREATION DU TERRAIN
-if (useThisMapGeneration) {useThisMapGeneration = false; Generate_Terrain(OBSTACLES);}} //PARAMETRABLE !
-//:: CREATION DE SON POIREAU AUTOMATIQUEMENT
-if (creatmyLeekFakeOnStart) {creatmyLeekFakeOnStart = false; CreateMyLeekFake();} //PARAMETRABLE !
-//:: INITAILISATION TERRAIN
-if (initialiseFunction) {initialiseFunction = false; INIATIALISATION_FONCTIONS();} //PARAMETRABLE !
 //:: DELETE LEEK AUTOMATIQUE
 var foo = _DeleteAuto; _DeleteAuto = [];
 for (var delete in foo) delete[0] === getTurn() && !delete[1]() || !push(_DeleteAuto, delete);
 //:: REINITIALISATION TP/MP...
-if (resetOnTurnStart) { //PARAMETRABLE !
+if (RESETONTURNSTART) { //PARAMETRABLE !
 	for (var leek in _Leek) {
 		leek["TP"] = leek["TPMax"];
 		leek["MP"] = leek["MPMax"];
 		//TODO : EFFETS...
 	}
 }
+//:: INITIALISATION AU TOUR 1
+if (getTurn() !== TURN_TO_INITIALISE) return ;
+//:: INITAILISATION TERRAIN
+if (INITIALISETERRAIN) {INIATIALISATION_TERRAIN(); //PARAMETRABLE !
+//:: CREATION DU TERRAIN
+if (USETHISMAPGENERATION) {Generate_Terrain(OBSTACLES);}} //PARAMETRABLE !
+//:: CREATION DE SON POIREAU AUTOMATIQUEMENT
+if (CREATMYLEEKFAKEONSTART) {CreateMyLeekFake();} //PARAMETRABLE !
+//:: INITAILISATION TERRAIN
+if (INITIALISEFUNCTION) {INIATIALISATION_FONCTIONS();} //PARAMETRABLE !
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: FONCTION CUSTOM
 function StartOperation () {_OPERATIONS = getOperations();}
 function EndOperation () {return getOperations() - _OPERATIONS - 4;}
 
 function DisplayMap () {
-	for (var i = 0; i < 613; i++) mark(i, color_map_empty, 100);
-	mark(getObstacles(),color_map_obstacle, 100);
-	for (var leek in getAliveEnemies()) mark(getCell(leek), color_map_enemy);
-	for (var leek in getAliveAllies()) mark(getCell(leek), color_map_ally);
-	mark(getCell(getLeek()), color_map_myLeek);
+	for (var i = 0; i < 613; i++) mark(i, COLOR_MAP_EMPTY, 100);
+	mark(getObstacles(),COLOR_MAP_OBSTACLE, 100);
+	for (var leek in getAliveEnemies()) mark(getCell(leek), COLOR_MAP_ENEMY);
+	for (var leek in getAliveAllies()) mark(getCell(leek), COLOR_MAP_ALLY);
+	mark(getCell(getLeek()), COLOR_MAP_MYLEEK);
 	return @SIM_SUCCESS;
 }
 
 function DisplayLeek (@id) {
 	if (_Leek[id] === null) return @SIM_ERR_ID;
-	debugC("Le "+((getType(id)===ENTITY_BULB)?"bulbe":"poireau")+" d'ID ("+id+") " +((isDead(id))?"est mort":("a " +getLife(id)+" sur "+getTotalLife(id)+" pdv maximum. Il est actuelement sur la cellule : " + getCell(id))), color_text_describe);
+	debugC("Le "+((getType(id)===ENTITY_BULB)?"bulbe":"poireau")+" d'ID ("+id+") " +((isDead(id))?"est mort":("a " +getLife(id)+" sur "+getTotalLife(id)+" pdv maximum. Il est actuelement sur la cellule : " + getCell(id))), COLOR_TEXT_DESCRIBE);
 	return @SIM_SUCCESS;
 }
 
@@ -225,20 +228,20 @@ function newLeek (@lvl, @cell, @is_Ally, @type, @summoner, @birthTurn, @life, @l
 	if (typeOf(lvl) != TYPE_NUMBER || typeOf(cell) != TYPE_NUMBER || typeOf(is_Ally) != TYPE_BOOLEAN || typeOf(type) != TYPE_NUMBER || (typeOf(summoner) != TYPE_NUMBER && typeOf(summoner) != TYPE_NULL)  || typeOf(birthTurn) != TYPE_NUMBER || typeOf(life) != TYPE_NUMBER || typeOf(lifeMax) != TYPE_NUMBER || typeOf(strength) != TYPE_NUMBER || typeOf(wisdom) != TYPE_NUMBER || typeOf(agility) != TYPE_NUMBER || typeOf(resistance) != TYPE_NUMBER || typeOf(science) != TYPE_NUMBER || typeOf(magic) != TYPE_NUMBER || typeOf(frequency) != TYPE_NUMBER || typeOf(TP) != TYPE_NUMBER || typeOf(MP) != TYPE_NUMBER || typeOf(TPMax) != TYPE_NUMBER || typeOf(MPMax) != TYPE_NUMBER || (typeOf(currentWeapon) != TYPE_NUMBER && typeOf(currentWeapon) != TYPE_NULL) || typeOf(weapons) != TYPE_ARRAY || typeOf(chips) != TYPE_ARRAY || typeOf(effects) != TYPE_ARRAY || typeOf(lauchedEffect) != TYPE_ARRAY) return @SIM_ERR_PARAMTYPE;
 
 // Seconde vérification : Les plages de données à respecter ainsi que d'autres conditions
-	if (lvl < 1 || lvl > 301) { debugC("newLeek - Erreur le level dois être compris entre 1 et 301", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if (cell < 0 || cell > 612 || !isEmptyCell(cell)) { debugC("newLeek - Erreur la cellule dois être comprise entre 0 et 612 inclus et ne dois pas être occupé", color_text_error); return @SIM_ERR_PARAM_DATARANGE;}
-	if (type !== ENTITY_BULB && type !== ENTITY_LEEK) { debugC("newLeek - Erreur le type dois être au choix : ENTITY_BULB ou ENTITY_LEEK", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if (!(type === ENTITY_BULB && _Leek[summoner] !== null || type === ENTITY_LEEK && summoner === null)) { debugC("newLeek - Erreur l'invocateur (son ID) doit être renseigner si l'entité est un bulbe, sinon reseigner null", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if (birthTurn < 1) { debugC("newLeek - Erreur le birthTurn doit être supérieur ou égale à 1", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if (lifeMax < life || lifeMax < 0) { debugC("newLeek - Erreur la vie du poireau ne peux pas depasser sa vie max", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if (frequency < 0) { debugC("newLeek - Erreur la fréquence du poireau ne peux être inférieur à 0", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if (TPMax < TP || TPMax < 0) { debugC("newLeek - Erreur les TPs du poireau ne peux pas depasser son nombre de TP max", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if (MPMax < MP || MPMax < 0) { debugC("newLeek - Erreur les MPs du poireau ne peux pas depasser son nombre de MP max", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if (currentWeapon !== null && search(weapons, currentWeapon) === null) { debugC("newLeek - Erreur l'arme équipé dans la main n'est pas dans son inventaire", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if ((function (listeW) {for (var w in listeW) if (!isWeapon(w)) return false; return @true;}(weapons)) !== true) { debugC("newLeek - Erreur la liste d'arme dans l'inventaire du poireau ne contient pas seulement des armes", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if ((function (listeC) {for (var c in listeC) if (!isChip(c)) return false; return @true;}(chips)) !== true) { debugC("newLeek - Erreur la liste de puce dans l'inventaire du poireau ne contient pas seulement des puces", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if ((function (arrayE) {for (var E in arrayE) if (typeOf(E) !== TYPE_ARRAY || count(E) != 7) return @false; return @true;}(effects)) !== true) { debugC("newLeek - Erreur les effets du poireau ne sont pas valides", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
-	if ((function (arrayE) {for (var E in arrayE) if (typeOf(E) !== TYPE_ARRAY || count(E) != 7) return @false; return @true;}(lauchedEffect)) !== true) { debugC("newLeek - Erreur les effets provoqués par le poireau ne sont pas valides", color_text_error); return @SIM_ERR_PARAM_DATARANGE; }
+	if (lvl < 1 || lvl > 301) { debugC("newLeek - Erreur le level dois être compris entre 1 et 301", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if (cell < 0 || cell > 612 || !isEmptyCell(cell)) { debugC("newLeek - Erreur la cellule dois être comprise entre 0 et 612 inclus et ne dois pas être occupé", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE;}
+	if (type !== ENTITY_BULB && type !== ENTITY_LEEK) { debugC("newLeek - Erreur le type dois être au choix : ENTITY_BULB ou ENTITY_LEEK", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if (!(type === ENTITY_BULB && _Leek[summoner] !== null || type === ENTITY_LEEK && summoner === null)) { debugC("newLeek - Erreur l'invocateur (son ID) doit être renseigner si l'entité est un bulbe, sinon reseigner null", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if (birthTurn < 1) { debugC("newLeek - Erreur le birthTurn doit être supérieur ou égale à 1", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if (lifeMax < life || lifeMax < 0) { debugC("newLeek - Erreur la vie du poireau ne peux pas depasser sa vie max", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if (frequency < 0) { debugC("newLeek - Erreur la fréquence du poireau ne peux être inférieur à 0", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if (TPMax < TP || TPMax < 0) { debugC("newLeek - Erreur les TPs du poireau ne peux pas depasser son nombre de TP max", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if (MPMax < MP || MPMax < 0) { debugC("newLeek - Erreur les MPs du poireau ne peux pas depasser son nombre de MP max", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if (currentWeapon !== null && search(weapons, currentWeapon) === null) { debugC("newLeek - Erreur l'arme équipé dans la main n'est pas dans son inventaire", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if ((function (listeW) {for (var w in listeW) if (!isWeapon(w)) return false; return @true;}(weapons)) !== true) { debugC("newLeek - Erreur la liste d'arme dans l'inventaire du poireau ne contient pas seulement des armes", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if ((function (listeC) {for (var c in listeC) if (!isChip(c)) return false; return @true;}(chips)) !== true) { debugC("newLeek - Erreur la liste de puce dans l'inventaire du poireau ne contient pas seulement des puces", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if ((function (arrayE) {for (var E in arrayE) if (typeOf(E) !== TYPE_ARRAY || count(E) != 7) return @false; return @true;}(effects)) !== true) { debugC("newLeek - Erreur les effets du poireau ne sont pas valides", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
+	if ((function (arrayE) {for (var E in arrayE) if (typeOf(E) !== TYPE_ARRAY || count(E) != 7) return @false; return @true;}(lauchedEffect)) !== true) { debugC("newLeek - Erreur les effets provoqués par le poireau ne sont pas valides", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
 
 	var id = @getNewID();
 	_Leek[id] = @["lvl" : lvl, "cell" : cell, "isAlly" : is_Ally, "type" : type, "birthTurn" : birthTurn, "life" : life, "lifeMax" : lifeMax, "strength" : strength, "wisdom" : wisdom, "agility" : agility, "resistance" : resistance, "science" : science, "magic" : magic, "frequency" : frequency, "TP" : TP, "MP" : MP, "TPMax" : TPMax, "MPMax" : MPMax, "currentWeapon" : currentWeapon, "weapons" : weapons, "chips" : chips, "effects" : effects, "lauchedEffects" : lauchedEffect];
@@ -453,7 +456,7 @@ getLeekOnCell = function (@cell) {
 	return @((isLeek(cell)) ? _TerrainContent[cell] : null);
 };
 nbr++;
-debugC("INIATIALISATION_TERRAIN - " + nbr + " fonctions recodées en " + EndOperation()  + " opérations.", color_text_describe);
+debugC("INIATIALISATION_TERRAIN - " + nbr + " fonctions recodées en " + EndOperation()  + " opérations.", COLOR_TEXT_DESCRIBE);
 }
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function INIATIALISATION_FONCTIONS () {
@@ -467,181 +470,181 @@ getLeek = function () { //fonction crée dynamiquement pour pouvoir appeler l'an
 nbr++;
 getLevel = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getCell - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetLevel(leek); }
+	if (_Leek[leek] === null) { debugC("getCell - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetLevel(leek); }
 	return _Leek[leek]["lvl"];
 };
 nbr++;
 getCell = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getCell - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetCell(leek); }
+	if (_Leek[leek] === null) { debugC("getCell - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetCell(leek); }
 	return _Leek[leek]["cell"];
 };
 nbr++;
 isAlly = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("isAlly - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastisAlly(leek); }
+	if (_Leek[leek] === null) { debugC("isAlly - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastisAlly(leek); }
 	return _Leek[leek]["isAlly"];
 };
 nbr++;
 isEnemy = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("isEnemy - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastisEnemy(leek); }
+	if (_Leek[leek] === null) { debugC("isEnemy - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastisEnemy(leek); }
 	return !_Leek[leek]["isAlly"];
 };
 nbr++;
 getLife = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getLife - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetLife(leek); }
+	if (_Leek[leek] === null) { debugC("getLife - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetLife(leek); }
 	return _Leek[leek]["life"];
 };
 nbr++;
 getTotalLife = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getTotalLife - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetTotalLife(leek); }
+	if (_Leek[leek] === null) { debugC("getTotalLife - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetTotalLife(leek); }
 	return _Leek[leek]["lifeMax"];
 };
 nbr++;
 getStrength = function (leek) { 
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getStrength - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetStrength(leek); }
+	if (_Leek[leek] === null) { debugC("getStrength - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetStrength(leek); }
 	return _Leek[leek]["strength"];
 };
 nbr++;
 getWisdom = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getWisdom - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetWisdom(leek); }
+	if (_Leek[leek] === null) { debugC("getWisdom - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetWisdom(leek); }
 	return _Leek[leek]["wisdom"];
 };
 nbr++;
 getAgility = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getAgility - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetAgility(leek); }
+	if (_Leek[leek] === null) { debugC("getAgility - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetAgility(leek); }
 	return _Leek[leek]["agility"];
 };
 nbr++;
 getResistance = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getResistance - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetResistance(leek); }
+	if (_Leek[leek] === null) { debugC("getResistance - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetResistance(leek); }
 	return _Leek[leek]["resistance"];
 };
 nbr++;
 getScience = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getScience - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetScience(leek); }
+	if (_Leek[leek] === null) { debugC("getScience - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetScience(leek); }
 	return _Leek[leek]["science"];
 };
 nbr++;
 getMagic = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getMagic - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetMagic(leek); }
+	if (_Leek[leek] === null) { debugC("getMagic - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetMagic(leek); }
 	return _Leek[leek]["magic"];
 };
 nbr++;
 getFrequency = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getFrequency - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetFrequency(leek); }
+	if (_Leek[leek] === null) { debugC("getFrequency - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetFrequency(leek); }
 	return _Leek[leek]["frequency"];
 };
 nbr++;
 getTP = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getTP - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetTP(leek); }
+	if (_Leek[leek] === null) { debugC("getTP - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetTP(leek); }
 	return _Leek[leek]["TP"];
 };
 nbr++;
 getMP = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getMP - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetMP(leek); }
+	if (_Leek[leek] === null) { debugC("getMP - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetMP(leek); }
 	return _Leek[leek]["MP"];
 };
 nbr++;
 getTotalTP = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getTotalTP - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetTP(leek); }
+	if (_Leek[leek] === null) { debugC("getTotalTP - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetTP(leek); }
 	return _Leek[leek]["TPMax"];
 };
 nbr++;
 getTotalMP = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getTotalMP - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetMP(leek); }
+	if (_Leek[leek] === null) { debugC("getTotalMP - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetMP(leek); }
 	return _Leek[leek]["MPMax"];
 };
 nbr++;
 getWeapon = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getWeapon - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetWeapon(leek); }
+	if (_Leek[leek] === null) { debugC("getWeapon - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetWeapon(leek); }
 	return _Leek[leek]["currentWeapon"];
 };
 nbr++;
 getWeapons = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getWeapons - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetWeapons(leek); }
+	if (_Leek[leek] === null) { debugC("getWeapons - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetWeapons(leek); }
 	return _Leek[leek]["weapons"];
 };
 nbr++;
 getChips = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getChips - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetChips(leek); }
+	if (_Leek[leek] === null) { debugC("getChips - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetChips(leek); }
 	return _Leek[leek]["chips"];
 };
 nbr++;
 isDead = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("isDead - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastisDead(leek); }
+	if (_Leek[leek] === null) { debugC("isDead - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastisDead(leek); }
 	return (_Leek[leek]["life"] <= 0);
 };
 nbr++;
 getType = function (entity) {
 	if (entity === null) return;
-	if (_Leek[entity] === null) { debugC("getType - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetType(entity); }
+	if (_Leek[entity] === null) { debugC("getType - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetType(entity); }
 	return _Leek[entity]["type"];
 };
 nbr++;
 isSummon = function (entity) {
 	if (entity === null) return;
-	if (_Leek[entity] === null) { debugC("isSummon - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastisSummon(entity); }
+	if (_Leek[entity] === null) { debugC("isSummon - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastisSummon(entity); }
 	return (typeOf(_Leek[entity]["summoner"] !== TYPE_NULL));
 };
 nbr++;
 getSummoner = function (entity) {
 	if (entity === null) return;
-	if (_Leek[entity] === null) { debugC("getSummoner - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetSummoner(entity); }
+	if (_Leek[entity] === null) { debugC("getSummoner - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetSummoner(entity); }
 	return _Leek[entity]["summoner"];
 };
 nbr++;
 getEffects = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getEffects - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetEffects(leek); }
+	if (_Leek[leek] === null) { debugC("getEffects - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetEffects(leek); }
 	return _Leek[leek]["effects"];
 };
 nbr++;
 getLaunchedEffects = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getLaunchedEffects - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetLaunchedEffects(leek); }
+	if (_Leek[leek] === null) { debugC("getLaunchedEffects - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetLaunchedEffects(leek); }
 	return _Leek[leek]["lauchedEffects"];
 };
 nbr++;
 getAbsoluteShield = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getAbsoluteShield - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetAbsoluteShield(leek); }
+	if (_Leek[leek] === null) { debugC("getAbsoluteShield - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetAbsoluteShield(leek); }
 	return (Effect_TotalValue(leek, EFFECT_ABSOLUTE_SHIELD) * (1 + getResistance(leek)/100));
 };
 nbr++;
 getRelativeShield = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getRelativeShield - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetRelativeShield(leek); }
+	if (_Leek[leek] === null) { debugC("getRelativeShield - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetRelativeShield(leek); }
 	return (Effect_TotalValue(leek, EFFECT_RELATIVE_SHIELD) * (1 + getResistance(leek)/100));
 };
 nbr++;
 getDamageReturn = function (leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getDamageReturn - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetDamageReturn(leek); }
+	if (_Leek[leek] === null) { debugC("getDamageReturn - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetDamageReturn(leek); }
 	return (Effect_TotalValue(leek, EFFECT_DAMAGE_RETURN) * (1 + getAgility(leek)/100));
 };
 nbr++;
 getBirthTurn = function (entity) {
 	if (entity === null) return;
-	if (_Leek[entity] === null) { debugC("getRelativeShield - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return _LastgetBirthTurn(entity); }
+	if (_Leek[entity] === null) { debugC("getRelativeShield - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetBirthTurn(entity); }
 	return _Leek[entity]["birthTurn"];
 };
 nbr++;
@@ -649,88 +652,88 @@ nbr++;
 //:: FONCTION COMBAT
 
 getAllies = function () {
-	if (_Leek === null || _Leek === []) { debugC("getAllies - Erreur, aucun poireau n'est enregistré", color_text_error); return []; }
+	if (_Leek === null || _Leek === []) { debugC("getAllies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var leek : var carac in _Leek) if (carac["isAlly"]) push(tmp, leek);
 	return tmp;
 };
 nbr++;
 getEnemies = function () {
-	if (_Leek === null || _Leek === []) { debugC("getEnemies - Erreur, aucun poireau n'est enregistré", color_text_error); return []; }
+	if (_Leek === null || _Leek === []) { debugC("getEnemies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var leek : var carac in _Leek) if (!carac["isAlly"]) push(tmp, leek);
 	return tmp;
 };
 nbr++;
 getAliveAllies = function () {
-	if (_Leek === null || _Leek === []) { debugC("getAliveAllies - Erreur, aucun poireau n'est enregistré", color_text_error); return []; }
+	if (_Leek === null || _Leek === []) { debugC("getAliveAllies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var ally in getAllies()) if (!isDead(ally)) push(tmp, ally);
 	return tmp;
 };
 nbr++;
 getAliveEnemies = function () {
-	if (_Leek === null || _Leek === []) { debugC("getAliveEnemies - Erreur, aucun poireau n'est enregistré", color_text_error); return []; }
+	if (_Leek === null || _Leek === []) { debugC("getAliveEnemies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var enemy in getEnemies()) if (!isDead(enemy)) push(tmp, enemy);
 	return tmp;
 };
 nbr++;
 getAliveEnemiesCount = function () {
-	if (_Leek === null || _Leek === []) { debugC("getAliveEnemies - Erreur, aucun poireau n'est enregistré", color_text_error); return 0; }
+	if (_Leek === null || _Leek === []) { debugC("getAliveEnemies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	return count(getAliveEnemies);
 };
 nbr++;
 getEnemiesCount = function () {
-	if (_Leek === null || _Leek === []) { debugC("getEnemiesCount - Erreur, aucun poireau n'est enregistré", color_text_error); return 0; }
+	if (_Leek === null || _Leek === []) { debugC("getEnemiesCount - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	return count(getEnemies());
 };
 nbr++;
 getEnemiesLife = function () {
-	if (_Leek === null || _Leek === []) { debugC("getEnemiesLife - Erreur, aucun poireau n'est enregistré", color_text_error); return 0; }
+	if (_Leek === null || _Leek === []) { debugC("getEnemiesLife - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	var tmp = 0;
 	for (var enemy in getEnemies()) tmp += (_Leek[enemy]["life"] <= 0)? 0 : _Leek[enemy]["life"];
 	return tmp;
 };
 nbr++;
 getDeadAllies = function () {
-	if (_Leek === null || _Leek === []) { debugC("getDeadAllies - Erreur, aucun poireau n'est enregistré", color_text_error); return []; }
+	if (_Leek === null || _Leek === []) { debugC("getDeadAllies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var ally in getAllies()) if (isDead(ally)) push(tmp, ally);
 	return tmp;
 };
 nbr++;
 getDeadEnemies = function () {
-	if (_Leek === null || _Leek === []) { debugC("getDeadEnemies - Erreur, aucun poireau n'est enregistré", color_text_error); return []; }
+	if (_Leek === null || _Leek === []) { debugC("getDeadEnemies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var enemy in getEnemies()) if (isDead(enemy)) push(tmp, enemy);
 	return tmp;
 };
 nbr++;
 getDeadEnemiesCount = function () {
-	if (_Leek === null || _Leek === []) { debugC("getDeadEnemiesCount - Erreur, aucun poireau n'est enregistré", color_text_error); return 0; }
+	if (_Leek === null || _Leek === []) { debugC("getDeadEnemiesCount - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	return count(getDeadEnemies());
 };
 nbr++;
 getAlliesLife = function () {
-	if (_Leek === null || _Leek === []) { debugC("getAlliesLife - Erreur, aucun poireau n'est enregistré", color_text_error); return 0; }
+	if (_Leek === null || _Leek === []) { debugC("getAlliesLife - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	var tmp = 0;
 	for (var ally in getAllies()) tmp += (_Leek[ally]["life"] <= 0)? 0 : _Leek[ally]["life"];
 	return tmp;
 };
 nbr++;
 getAlliesCount = function () {
-	if (_Leek === null || _Leek === []) { debugC("getAlliesCount - Erreur, aucun poireau n'est enregistré", color_text_error); return 0; }
+	if (_Leek === null || _Leek === []) { debugC("getAlliesCount - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	return count(getAllies());
 };
 nbr++;
 getNearestAllyTo = function (leek) {
-	if (_Leek[leek] === null) { debugC("getNearestAllyTo - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
+	if (_Leek[leek] === null) { debugC("getNearestAllyTo - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	return getNearestAllyToCell(getCell(leek));
 };
 nbr++;
 getNearestAlly = function () {
-	if (_Leek[getLeek()] === null) { debugC("getNearestAlly - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
+	if (_Leek[getLeek()] === null) { debugC("getNearestAlly - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	return getNearestAllyToCell(getCell(getLeek()));
 };
 nbr++;
@@ -749,7 +752,7 @@ getNearestAllyToCell = function (cell) {
 };
 nbr++;
 getFarthestAlly = function () {
-	if (_Leek[getLeek()] === null) { debugC("getFarthestAlly - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
+	if (_Leek[getLeek()] === null) { debugC("getFarthestAlly - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	var FarthestCell = null;
 	var dist = -1;
 	
@@ -764,12 +767,12 @@ getFarthestAlly = function () {
 };
 nbr++;
 getNearestEnemyTo = function (leek) {
-	if (_Leek[leek] === null) { debugC("getNearestEnemyTo - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
+	if (_Leek[leek] === null) { debugC("getNearestEnemyTo - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	return getNearestEnemyToCell(getCell(leek));
 };
 nbr++;
 getNearestEnemy = function () {
-	if (_Leek[getLeek()] === null) { debugC("getNearestEnemy - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
+	if (_Leek[getLeek()] === null) { debugC("getNearestEnemy - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	return getNearestEnemyToCell(getCell(getLeek()));
 };
 nbr++;
@@ -788,7 +791,7 @@ getNearestEnemyToCell = function (cell) {
 };
 nbr++;
 getFarthestEnemy = function () {
-	if (_Leek[getLeek()] === null) { debugC("getFarthestEnemy - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
+	if (_Leek[getLeek()] === null) { debugC("getFarthestEnemy - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	var FarthestCell = null;
 	var dist = -1;
 	
@@ -803,18 +806,18 @@ getFarthestEnemy = function () {
 };
 nbr++;
 setWeapon = function (weapon) {
-	if (_Leek[getLeek()] === null) { debugC("setWeapon - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
+	if (_Leek[getLeek()] === null) { debugC("setWeapon - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	
 	if (search(_Leek[getLeek()]["weapons"], weapon) === null) return ;
 	
-	if (simulateTP) {
+	if (SIMULATETP) {
 		if (_Leek[getLeek()]["TP"] < 1) return ;
 		else --_Leek[getLeek()]["TP"];
 	}
 	_Leek[getLeek()]["currentWeapon"] = weapon;
 };
 nbr++;
-debugC("INIATIALISATION_FUNCTION - " + nbr + " fonctions recodées en " + EndOperation()  + " opérations.", color_text_describe);
+debugC("INIATIALISATION_FUNCTION - " + nbr + " fonctions recodées en " + EndOperation()  + " opérations.", COLOR_TEXT_DESCRIBE);
 }
 
 lineOfSight = function (start, end, leekToIgnore) {
@@ -865,14 +868,14 @@ lineOfSight = function (start, end, leekToIgnore) {
 };
 
 canUseWeapon = function (weapon, leek) {
-	if (_Leek[leek] === null) { debugC("canUseWeapon - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
-	if (!isWeapon(weapon)) { debugC("canUseWeapon - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
+	if (_Leek[leek] === null) { debugC("canUseWeapon - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
+	if (!isWeapon(weapon)) { debugC("canUseWeapon - Erreur de l'arme, celle-ci n'est pas répertorié", COLOR_TEXT_ERROR); return null; }
 
 	return canUseWeaponOnCell(weapon, getCell(leek));
 };
 
 canUseWeaponOnCell = function (weapon, cell) {
-	if (!isWeapon(weapon)) { debugC("canUseWeaponOnCell - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
+	if (!isWeapon(weapon)) { debugC("canUseWeaponOnCell - Erreur de l'arme, celle-ci n'est pas répertorié", COLOR_TEXT_ERROR); return null; }
 	
 	
 	var dist = getCellDistance(getCell(getLeek()), cell);
@@ -883,14 +886,14 @@ canUseWeaponOnCell = function (weapon, cell) {
 };
 
 canUseChip = function (Chip, leek) {
-	if (_Leek[leek] === null) { debugC("canUseChip - Erreur de l'ID, aucun poireau n'y est attribué", color_text_error); return null; }
-	if (!isChip(Chip)) { debugC("canUseChip - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
+	if (_Leek[leek] === null) { debugC("canUseChip - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
+	if (!isChip(Chip)) { debugC("canUseChip - Erreur de l'arme, celle-ci n'est pas répertorié", COLOR_TEXT_ERROR); return null; }
 
 	return canUseWeaponOnCell(Chip, getCell(leek));
 };
 
 canUseChipOnCell = function (Chip, cell) {
-	if (!isChip(Chip)) { debugC("canUseChipOnCell - Erreur de l'arme, celle-ci n'est pas répertorié", color_text_error); return null; }
+	if (!isChip(Chip)) { debugC("canUseChipOnCell - Erreur de l'arme, celle-ci n'est pas répertorié", COLOR_TEXT_ERROR); return null; }
 	
 	
 	var dist = getCellDistance(getCell(getLeek()), cell);
@@ -902,21 +905,21 @@ canUseChipOnCell = function (Chip, cell) {
 };
 
 resurrect = function (entity, cell) {
-	if (_Leek[entity] === null) { debugC("resurrect - Erreur de l'ID, aucune entité n'y est attribué", color_text_error); return null; }
-	if (!isDead(entity)) { debugC("resurrect - Erreur le poireau dois être mort", color_text_error); return null; }
-	if (search(_Leek[getLeek()]["chips"], CHIP_RESURRECTION)) { debugC("resurrect - Erreur la puce n'est pas équipé dans votre inventaire", color_text_error); return null; }
-	if (!canUseChipOnCell(CHIP_RESURRECTION, cell)) { debugC("resurrect - Erreur la puce ne peut pas être utilisé sur cette cellule", color_text_error); return null; }
+	if (_Leek[entity] === null) { debugC("resurrect - Erreur de l'ID, aucune entité n'y est attribué", COLOR_TEXT_ERROR); return null; }
+	if (!isDead(entity)) { debugC("resurrect - Erreur le poireau dois être mort", COLOR_TEXT_ERROR); return null; }
+	if (search(_Leek[getLeek()]["chips"], CHIP_RESURRECTION)) { debugC("resurrect - Erreur la puce n'est pas équipé dans votre inventaire", COLOR_TEXT_ERROR); return null; }
+	if (!canUseChipOnCell(CHIP_RESURRECTION, cell)) { debugC("resurrect - Erreur la puce ne peut pas être utilisé sur cette cellule", COLOR_TEXT_ERROR); return null; }
 	
 	SetCell(entity, cell);
 	SetLife_LifeMax(entity, getTotalLife(entity)/4, getTotalLife(entity)/2);
 };
 
 summon = function (chip, cell, ai) {
-	if (search(_Leek[getLeek()]["chips"], chip)) { debugC("summon - Erreur la puce n'est pas équipé dans votre inventaire", color_text_error); return null; }
-	if (!canUseChipOnCell(chip, cell)) { debugC("summon - Erreur la puce ne peut pas être utilisé sur cette cellule", color_text_error); return null; }
-	if (typeOf(ai) !== TYPE_FUNCTION) { debugC("summon - Erreur le paramètre ai dois être une fonction", color_text_error); return null; }
+	if (search(_Leek[getLeek()]["chips"], chip)) { debugC("summon - Erreur la puce n'est pas équipé dans votre inventaire", COLOR_TEXT_ERROR); return null; }
+	if (!canUseChipOnCell(chip, cell)) { debugC("summon - Erreur la puce ne peut pas être utilisé sur cette cellule", COLOR_TEXT_ERROR); return null; }
+	if (typeOf(ai) !== TYPE_FUNCTION) { debugC("summon - Erreur le paramètre ai dois être une fonction", COLOR_TEXT_ERROR); return null; }
 	
-	if (simulateTP) {
+	if (SIMULATETP) {
 		if (_Leek[getLeek()]["TP"] < getChipCost(chip)) return ;
 		else _Leek[getLeek()]["TP"] -= getChipCost(chip);
 	}
@@ -992,14 +995,14 @@ summon = function (chip, cell, ai) {
 		TPMax = floor((10 - 6) * getLevel(getLeek())/300 + 6);
 		MPMax = floor((6 - 4) * getLevel(getLeek())/300 + 4);
 		chips = [CHIP_SHOCK, CHIP_FLASH, CHIP_LIGHTNING, CHIP_DOPING];
-	} else { debugC("summon - Erreur la puce renseigner n'est pas un bulbe", color_text_error); return null; }
+	} else { debugC("summon - Erreur la puce renseigner n'est pas un bulbe", COLOR_TEXT_ERROR); return null; }
 	
 	 return newLeek(getLevel(getLeek()), cell, true, ENTITY_BULB, getLeek(), getTurn(), lifeMax, lifeMax, strength, wisdom, agility, resistance, science, 0, 0, TPMax, MPMax, TPMax, MPMax, null, [], chips, [], []);
 };
 
 getWeaponEffectiveArea = function(weapon, cell, from) {
-	if (!isWeapon(weapon)) { debugC("getWeaponEffectiveArea - Erreur l'arme donnée n'en est pas une.", color_text_error); return []; }
-	if (!canUseWeaponOnCellFrom(weapon, cell, from)) { debugC("getWeaponEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec l'arme " + weapon, color_text_error); return []; }
+	if (!isWeapon(weapon)) { debugC("getWeaponEffectiveArea - Erreur l'arme donnée n'en est pas une.", COLOR_TEXT_ERROR); return []; }
+	if (!canUseWeaponOnCellFrom(weapon, cell, from)) { debugC("getWeaponEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec l'arme " + weapon, COLOR_TEXT_ERROR); return []; }
 	
 	var areaWeapon = getWeaponArea(weapon);
 	
@@ -1030,8 +1033,8 @@ getWeaponEffectiveArea = function(weapon, cell, from) {
 };
 
 getChipEffectiveArea = function(chip, cell, from) {
-	if (!isChip(chip)) { debugC("getChipEffectiveArea - Erreur la puce donnée n'en est pas une.", color_text_error); return []; }
-	if (!canUseChipOnCellFrom(chip, cell, from)) { debugC("getChipEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec la puce " + chip, color_text_error); return []; }
+	if (!isChip(chip)) { debugC("getChipEffectiveArea - Erreur la puce donnée n'en est pas une.", COLOR_TEXT_ERROR); return []; }
+	if (!canUseChipOnCellFrom(chip, cell, from)) { debugC("getChipEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec la puce " + chip, COLOR_TEXT_ERROR); return []; }
 	var areaChip = getChipArea(chip);
 	
 	if (areaChip === AREA_POINT) {
@@ -1061,7 +1064,7 @@ getChipEffectiveArea = function(chip, cell, from) {
 };
 
 getWeaponTargets = function (weapon, cell) {
-	if (!isWeapon(weapon)) { debugC("getWeaponTargets - Erreur l'arme donnée n'en est pas une.", color_text_error); return []; }
+	if (!isWeapon(weapon)) { debugC("getWeaponTargets - Erreur l'arme donnée n'en est pas une.", COLOR_TEXT_ERROR); return []; }
 	
 	var tmp = [];
 	for(var celltmp in getWeaponEffectiveArea(weapon, cell, getCell(getLeek()))) {
@@ -1073,7 +1076,7 @@ getWeaponTargets = function (weapon, cell) {
 };
 
 getChipTargets = function (chip, cell) {
-	if (!isChip(chip)) { debugC("getChipTargets - Erreur la puce donnée n'en est pas une.", color_text_error); return []; }
+	if (!isChip(chip)) { debugC("getChipTargets - Erreur la puce donnée n'en est pas une.", COLOR_TEXT_ERROR); return []; }
 	
 	var tmp = [];
 	for(var celltmp in getChipEffectiveArea(chip, cell, getCell(getLeek()))) {
