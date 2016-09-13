@@ -389,7 +389,7 @@ function  canUseWeaponOnCellFrom (@weapon, @cell, @from) {
 	if (isInlineWeapon(weapon) && !isOnSameLine(from, cell)) return @false;
 	if (!lineOfSight(from,cell, getLeek())) return @false;
 	return @true;
-};
+}
 
 function canUseChipOnCellFrom (@Chip, @cell, @from) {
 	var dist = @getCellDistance(from, cell);
@@ -398,7 +398,7 @@ function canUseChipOnCellFrom (@Chip, @cell, @from) {
 	if (chipNeedLos(Chip) && !lineOfSight(getCell(getLeek()),cell, getLeek())) return @false;
 	if (getCooldown(Chip, getLeek()) > 0) return @false;
 	return @true;
-};
+}
 
 function Area (@origine, @rayon) {
 	var i = 0, toCheck = [origine], dist = 0, tmp, cells = [];
