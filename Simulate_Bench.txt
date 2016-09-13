@@ -405,38 +405,31 @@ function Area (@origine, @rayon) {
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: FONCTIONS TERRAIN
 function INIATIALISATION_TERRAIN () {
-getCellContent = function (cell) {
-	if (typeOf(_TerrainContent[cell]) == TYPE_NUMBER) { debugC("getCellContent - Erreur, la cellule donnée est hors map", color_text_error); return null; }
-	var content = _TerrainContent[cell];
-	return ((_TerrainContent[cell] !== CELL_EMPTY && _TerrainContent[cell] !== CELL_OBSTACLE)? CELL_PLAYER : content);
+getCellContent = function (@cell) {
+	if (typeOf(_TerrainContent[cell]) == TYPE_NULL) return ERROR_PARAM_DATARANGE;
+	var content = @_TerrainContent[cell];
+	return @((_TerrainContent[cell] !== CELL_EMPTY && _TerrainContent[cell] !== CELL_OBSTACLE)? CELL_PLAYER : content);
 };
 
 getObstacles = function () {
-	//debug(_TerrainContent + " / " + count(_TerrainContent));
-	if (count(_TerrainContent) !== 613) { debugC("getObstacles - Erreur, les données de la carte sont faussées", color_text_error); return []; }
-	var tmp = [];
-	for (var cell : var content in _TerrainContent) if (content === CELL_OBSTACLE) push(tmp, cell);
-	return tmp;
+	var tmp = @[];
+	for (var cell : var content in _TerrainContent) if (!content /* == CELL_OBSTACLE */) push(tmp, cell);
+	return @tmp;
 };
 
-isEmptyCell = function (cell) {
-	if (typeOf(_TerrainContent[cell]) !== TYPE_NUMBER) { debugC("isEmptyCell - Erreur, la cellule donnée est hors map", color_text_error); return false; }
-	return (_TerrainContent[cell] === CELL_EMPTY);
+isEmptyCell = function (@cell) {
+	return @(_TerrainContent[cell] === CELL_EMPTY);
 };
 
-isLeek = function (cell) {
-	if (typeOf(_TerrainContent[cell]) !== TYPE_NUMBER) { debugC("isLeek - Erreur, la cellule donnée est hors map", color_text_error); return false; }
-	return !(_TerrainContent[cell] === CELL_EMPTY || _TerrainContent[cell] === CELL_OBSTACLE);
-};
+isLeek = function (@cell) {
+	return @(getCellContent(cell) === CELL_PLAYER);
 
-isObstacle = function (cell) {
-	if (typeOf(_TerrainContent[cell]) !== TYPE_NUMBER) { debugC("isObstacle - Erreur, la cellule donnée est hors map", color_text_error); return false; }
+isObstacle = function (@cell) {
 	return (_TerrainContent[cell] === CELL_OBSTACLE);
 };
 
-getLeekOnCell = function (cell) {
-	if (typeOf(_TerrainContent[cell]) !== TYPE_NUMBER) { debugC("getLeekOnCell - Erreur, la cellule donnée est hors map", color_text_error); return null; }
-	return ((isLeek(cell)) ? _TerrainContent[cell] : null);
+getLeekOnCell = function (@cell) {
+	return @((isLeek(cell)) ? _TerrainContent[cell] : null);
 };
 
 }
@@ -444,8 +437,8 @@ getLeekOnCell = function (cell) {
 function INIATIALISATION_FONCTIONS () {
 //:: FONCTIONS POIREAUX
 getLeek = function () { //fonction crée dynamiquement pour pouvoir appeler l'ancienne fonction
-	if (_myID === null) { debugC("getLeek - Erreur de l'ID, votre poireau n'as pas été initialisé, appeler la fonction MyLeek", color_text_error); return _LastgetLeek(); }
-	return _myID;
+	if (_myID === null) return @ERROR_ID;
+	return @_myID;
 };
 
 getLevel = function (leek) {
