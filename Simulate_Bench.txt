@@ -265,7 +265,7 @@ function Generate_Terrain (@obstacles) {
 }
 
 function ChangeWeapon (@leek, @weapon) {
-	return ((_Leek[leek] === null)? EEROR_ID : ((!inArray(_Leek[leek]["weapons"], weapon)|| !isWeapon(weapon))? @false : !(_Leek[leek]["currentWeapon"] = weapon)));
+	return ((_Leek[leek] === null)? @ERROR_ID : ((!inArray(_Leek[leek]["weapons"], weapon)|| !isWeapon(weapon))? @false : !(_Leek[leek]["currentWeapon"] = weapon)));
 }
 
 function SetCell (@leek, @cell) {
