@@ -203,11 +203,11 @@ function DeleteLeekOnTurn (@leek, @turn) {
 function getNewID () { return @ID_Leek++; }
 
 function MyLeekCustom (@lvl, @cell, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
-	return @(myID = newLeek(lvl, cell, true, ENTITY_LEEK, null, 1, life, lifeMax, strength, wisdom, agility, resistance, science, magic, frequency, TP, MP, TPMax, MPMax, currentWeapon, weapons, chips, effects, lauchedEffect));
+	return @(_myID = newLeek(lvl, cell, true, ENTITY_LEEK, null, 1, life, lifeMax, strength, wisdom, agility, resistance, science, magic, frequency, TP, MP, TPMax, MPMax, currentWeapon, weapons, chips, effects, lauchedEffect));
 }
 
 function CreateMyLeekFake () {
-	return @(_myID = newLeek(getLevel(getLeek()), getCell(getLeek()), true, ENTITY_LEEK, null, getTurn(), getLife(getLeek()), getTotalLife(getLeek()), getStrength(getLeek()), getWisdom(getLeek()), getAgility(getLeek()), getResistance(getLeek()), getScience(getLeek()), getMagic(getLeek()), getFrequency(getLeek()), getTP(getLeek()), getMP(getLeek()), getTotalTP(getLeek()), getTotalMP(getLeek()), getWeapon(getLeek()), getWeapons(getLeek()), getChips(getLeek()), getEffects(getLeek()), getLaunchedEffects(getLeek())););
+	return @(_myID = newLeek(getLevel(getLeek()), getCell(getLeek()), true, ENTITY_LEEK, null, getTurn(), getLife(getLeek()), getTotalLife(getLeek()), getStrength(getLeek()), getWisdom(getLeek()), getAgility(getLeek()), getResistance(getLeek()), getScience(getLeek()), getMagic(getLeek()), getFrequency(getLeek()), getTP(getLeek()), getMP(getLeek()), getTotalTP(getLeek()), getTotalMP(getLeek()), getWeapon(getLeek()), getWeapons(getLeek()), getChips(getLeek()), getEffects(getLeek()), getLaunchedEffects(getLeek())));
 } 
 
 function DefaultMyLeekCreation (@cell, @TPMax, @MPMax, @weapon, @weapons, @chips) {
@@ -276,9 +276,9 @@ function Generate_Terrain (@obstacles) {
 
 function ChangeWeapon (@leek, @weapon) {
 	 if (_Leek[leek] === null) return @SIM_ERR_ID;
-	 if (!inArray(_Leek[leek]["weapons"], weapon) return @SIM_ERR_PARAM_DATARANGE;
+	 if (!inArray(_Leek[leek]["weapons"], weapon)) return @SIM_ERR_PARAM_DATARANGE;
 	 if (!isWeapon(weapon)) return @SIM_ERR_PARAMTYPE;
-	 _Leek[leek]["currentWeapon"] = weapon; return SIM_SUCCESS;;
+	 _Leek[leek]["currentWeapon"] = weapon; return SIM_SUCCESS;
 }
 
 function SetCell (@leek, @cell) {
@@ -442,7 +442,7 @@ isEmptyCell = function (@cell) {
 nbr++;
 isLeek = function (@cell) {
 	return @(getCellContent(cell) === CELL_PLAYER);
-}
+};
 nbr++;
 isObstacle = function (@cell) {
 	return (_TerrainContent[cell] === CELL_OBSTACLE);
