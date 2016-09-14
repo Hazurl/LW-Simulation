@@ -153,6 +153,7 @@ global _LastgetDamageReturn = getDamageReturn;
 global _LastgetBirthTurn = getBirthTurn;
 
 global _TerrainContent = []; if (getTurn() == 1) fill(_TerrainContent, CELL_EMPTY, 613);
+global _ListObstacles = [];
 
 global _OPERATIONS = 0;
 global _DeleteAuto = [];
@@ -275,7 +276,7 @@ function Effect_TotalValue (@leek, @type_value) {
 function Generate_Terrain (@obstacles) {
 	if (typeOf(obstacles) !== TYPE_ARRAY) return @SIM_ERR_PARAMTYPE;
 	if (count(obstacles) > 613) return @SIM_ERR_PARAM_DATARANGE;
-	for (var i = 0; i<count(obstacles); i++) if (obstacles[i] == 1) _TerrainContent[i] = CELL_OBSTACLE; 
+	for (var i = 0; i<count(obstacles); i++) if (obstacles[i] == 1) {_TerrainContent[i] = CELL_OBSTACLE; push(_ListObstacles, i);}
 }
 
 function ChangeWeapon (@leek, @weapon) {
@@ -435,9 +436,7 @@ getCellContent = function (@cell) {
 };
 nbr++;
 getObstacles = function () {
-	var tmp = @[];
-	for (var cell : var content in _TerrainContent) if (!content /* == CELL_OBSTACLE */) push(tmp, cell);
-	return @tmp;
+	return @_ListObstacles;
 };
 nbr++;
 isEmptyCell = function (@cell) {
