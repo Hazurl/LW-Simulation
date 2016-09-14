@@ -3,7 +3,7 @@ global __OPERATIONS = 0;
 function _StartOperation () {__OPERATIONS = getOperations();}
 function _EndOperation () {return getOperations() - __OPERATIONS - 4;}
 
-debugC("Opérations nécéssaire aux fonctions natives : ", getColor(0, 0, 0));
+debugC("Opérations nécéssaire aux fonctions natives : ", getColor(6, 165, 67));
 
 var result = 0;
 var obs = [];
@@ -58,7 +58,7 @@ debug((_EndOperation()) + " opérations pour getLeekOnCell(myCell) -> " + (((res
 include("Sim_01");
 
 DefaultMyLeekCreation(306, 12, 10, null, [], []);
-debugC("Opérations nécéssaire aux fonctions natives recodés : ", getColor(0, 0, 0));
+debugC("Opérations nécéssaire aux fonctions natives recodés : ", getColor(6, 165, 67));
 var _result = 0;
 var _obstacles = [];
 var _me = 0;
