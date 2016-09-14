@@ -6,26 +6,43 @@ var myID = DefaultMyLeekCreation(306, 12, 10, null, [], []);
 /*
 global _OPERATIONS = 0;
 function StartOperation () {_OPERATIONS = getOperations();}
-function EndOperation () {return getOperations() - _OPERATIONS - 4;}*/
-
+function EndOperation () {return getOperations() - _OPERATIONS - 4;}
+*/
 var result = 0;
+var obstacles = [];
 
 StartOperation();
-	var obstacles = getObstacles();
-debug((EndOperation() - 1) + " opérations pour getObstacles() -> " + ((typeOf(obstacles) === TYPE_ARRAY)?("TRUE") : (typeOf(obstacles) + " should be " + TYPE_ARRAY))); mark(obstacles, COLOR_RED);
+	getObstacles();
+debug((EndOperation()) + " opérations pour getObstacles() -> " + ((typeOf((obstacles = getObstacles())) === TYPE_ARRAY)?("TRUE") : (typeOf(obstacles) + " should be " + TYPE_ARRAY))); mark(obstacles, COLOR_RED);
 
 StartOperation();
-	result = getCellContent(0);
-debug((EndOperation() - 1) + " opérations pour getCellContent(0) (CELL_EMPTY) -> " + ((result === CELL_EMPTY)?("TRUE") : (result + " should be " + CELL_EMPTY)));
+	getCellContent(0);
+debug((EndOperation()) + " opérations pour getCellContent(0) (CELL_EMPTY) -> " + (((result = getCellContent(0)) === CELL_EMPTY)?("TRUE") : (result + " should be " + CELL_EMPTY)));
 
 StartOperation();
-	result = getCellContent(obstacles[0]);
-debug((EndOperation() - 1) + " opérations pour getCellContent(obstacles[0]) (CELL_OBSTACLE) -> " + ((result === CELL_OBSTACLE)?("TRUE") : (result + " should be " + CELL_OBSTACLE)));
+	getCellContent(obstacles[0]);
+debug((EndOperation()) + " opérations pour getCellContent(obstacles[0]) (CELL_OBSTACLE) -> " + (((result = getCellContent(obstacles[0])) === CELL_OBSTACLE)?("TRUE") : (result + " should be " + CELL_OBSTACLE)));
 
 StartOperation();
-	result = getCellContent(306);
-debug((EndOperation() - 1) + " opérations pour getCellContent(306) (CELL_PLAYER) -> " + ((result === CELL_PLAYER)?("TRUE") : (result + " should be " + CELL_PLAYER)));
+	getCellContent(306);
+debug((EndOperation()) + " opérations pour getCellContent(306) (CELL_PLAYER) -> " + (((result = getCellContent(306))  === CELL_PLAYER)?("TRUE") : (result + " should be " + CELL_PLAYER)));
 
 StartOperation();
-	result = getCellContent(getCell(getLeek()));
-debug((EndOperation() - 1) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + ((result === CELL_PLAYER)?("TRUE") : (result + " should be " + CELL_PLAYER)));
+	getCellContent(getCell(getLeek()));
+debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + (((result = getCellContent(getCell(getLeek()))) === CELL_PLAYER)?("TRUE") : (result + " should be " + CELL_PLAYER)));
+
+StartOperation();
+	isLeek(getCell(getLeek()));
+debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + (((result = isLeek(getCell(getLeek()))) === getLeek())?("TRUE") : (result + " should be " + CELL_PLAYER)));
+
+StartOperation();
+	isObstacle(obstacles[0]);
+debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + (((result = isObstacle(obstacles[0])) === true)?("TRUE") : (result + " should be " + true)));
+
+StartOperation();
+	isEmptyCell(0);
+debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + (((result = isEmptyCell(0)) === true)?("TRUE") : (result + " should be " + true)));
+
+StartOperation();
+	getLeekOnCell(getCell(getLeek()));
+debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + (((result = getLeekOnCell(getCell(getLeek()))) === true)?("TRUE") : (result + " should be " + true)));
