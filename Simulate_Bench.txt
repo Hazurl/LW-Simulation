@@ -245,6 +245,7 @@ function newLeek (@lvl, @cell, @is_Ally, @type, @summoner, @birthTurn, @life, @l
 	if ((function (arrayE) {for (var E in arrayE) if (typeOf(E) !== TYPE_ARRAY || count(E) != 7) return @false; return @true;}(lauchedEffect)) !== true) { debugC("newLeek - Erreur les effets provoqués par le poireau ne sont pas valides", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
 
 	var id = @getNewID();
+	_TerrainContent[cell] = id; // Afin d'optimiser getCellContent
 	_Leek[id] = @["lvl" : lvl, "cell" : cell, "isAlly" : is_Ally, "type" : type, "birthTurn" : birthTurn, "life" : life, "lifeMax" : lifeMax, "strength" : strength, "wisdom" : wisdom, "agility" : agility, "resistance" : resistance, "science" : science, "magic" : magic, "frequency" : frequency, "TP" : TP, "MP" : MP, "TPMax" : TPMax, "MPMax" : MPMax, "currentWeapon" : currentWeapon, "weapons" : weapons, "chips" : chips, "effects" : effects, "lauchedEffects" : lauchedEffect];
 	return @id;
 }
