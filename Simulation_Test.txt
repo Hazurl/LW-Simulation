@@ -1,22 +1,8 @@
-<<<<<<< HEAD
-/*
-global _OPERATIONS = 0;
-function StartOperation () {_OPERATIONS = getOperations();}
-function EndOperation () {return getOperations() - _OPERATIONS - 4;}
-*/
-// Penser à inclure le bon fichier sur LW ...
-include("Sim_01");
-
-DefaultMyLeekCreation(306, 12, 10, null, [], []);
-=======
 global __OPERATIONS = 0;
 
 function _StartOperation () {__OPERATIONS = getOperations();}
 function _EndOperation () {return getOperations() - __OPERATIONS - 4;}
-
 debugC("Opérations nécéssaire aux fonctions natives : ", getColor(6, 165, 67));
->>>>>>> origin/feature
-
 var result = 0;
 var obs = [];
 var me = 0;
@@ -52,33 +38,18 @@ debug((_EndOperation() - 8) + " opérations pour getCellContent(myCell) -> " + (
 
 _StartOperation();
 	isLeek(getCell(getLeek()));
-<<<<<<< HEAD
-debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (getLeek()) -> " + (((result = isLeek(getCell(getLeek()))) === getLeek())?("TRUE") : (result + " should be " + CELL_PLAYER)));
-
-StartOperation();
-	isObstacle(obstacles[0]);
-debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (true) -> " + (((result = isObstacle(obstacles[0])) === true)?("TRUE") : (result + " should be " + true)));
-=======
 debug((_EndOperation()) + " opérations pour isLeek(myCell) -> " + (((result = isLeek(myCell)) === true)?("TRUE") : (result + " should be " + true)));
 
 _StartOperation();
 	isObstacle(obs[0]);
 debug((_EndOperation()) + " opérations pour isObstacle(obs[0])) -> " + (((result = isObstacle(obs[0])) === true)?("TRUE") : (result + " should be " + true)));
->>>>>>> origin/feature
 
 _StartOperation();
 	isEmptyCell(0);
-<<<<<<< HEAD
-debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (true) -> " + (((result = isEmptyCell(0)) === true)?("TRUE") : (result + " should be " + true)));
-=======
 debug((_EndOperation()) + " opérations pour isEmptyCell(0) -> " + (((result = isEmptyCell(0)) === true)?("TRUE") : (result + " should be " + true)));
->>>>>>> origin/feature
 
 _StartOperation();
 	getLeekOnCell(getCell(getLeek()));
-<<<<<<< HEAD
-debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (getCell(getLeek())) -> " + (((result = getLeekOnCell(getCell(getLeek()))) === true)?("TRUE") : (result + " should be " + true)));
-=======
 debug((_EndOperation()) + " opérations pour getLeekOnCell(myCell) -> " + (((result = getLeekOnCell(myCell)) === getLeek())?("TRUE") : (result + " should be " + me)));
 
 // Penser à inclure le bon fichier sur LW ...
@@ -134,4 +105,3 @@ debug((_EndOperation()) + " opérations pour isEmptyCell(0) -> " + (((_result = 
 _StartOperation();
 	getLeekOnCell(_myCell);
 debug((_EndOperation()) + " opérations pour getLeekOnCell(_myCell) -> " + (((_result = getLeekOnCell(_myCell)) === getLeek())?("TRUE") : (_result + " should be " + _me)));
->>>>>>> origin/feature
