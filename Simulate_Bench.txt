@@ -463,21 +463,17 @@ function INIATIALISATION_FONCTIONS () {
 //:: FONCTIONS POIREAUX
 StartOperation();
 var nbr = 0;
-getLeek = function () { //fonction crée dynamiquement pour pouvoir appeler l'ancienne fonction
+getLeek = function () {
 	if (_myID === null) return @SIM_ERR_ID;
 	return @_myID;
 };
 nbr++;
-getLevel = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getCell - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetLevel(leek); }
-	return _Leek[leek]["lvl"];
+getLevel = function (@leek) {
+	return @_Leek[leek]["lvl"];
 };
 nbr++;
-getCell = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getCell - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetCell(leek); }
-	return _Leek[leek]["cell"];
+getCell = function (@leek) {
+	return @_Leek[leek]["cell"];
 };
 nbr++;
 isAlly = function (leek) {
