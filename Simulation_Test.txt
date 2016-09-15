@@ -1,13 +1,13 @@
-// Penser à inclure le bon fichier sur LW ...
-include("Sim_01");
-
-//var idLeek_01 = DefaultLeekCreation(306, 12, 10, null, [47], []);
-var myID = DefaultMyLeekCreation(306, 12, 10, null, [], []);
 /*
 global _OPERATIONS = 0;
 function StartOperation () {_OPERATIONS = getOperations();}
 function EndOperation () {return getOperations() - _OPERATIONS - 4;}
 */
+// Penser à inclure le bon fichier sur LW ...
+include("Sim_01");
+
+DefaultMyLeekCreation(306, 12, 10, null, [], []);
+
 var result = 0;
 var obstacles = [];
 
@@ -33,16 +33,16 @@ debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (
 
 StartOperation();
 	isLeek(getCell(getLeek()));
-debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + (((result = isLeek(getCell(getLeek()))) === getLeek())?("TRUE") : (result + " should be " + CELL_PLAYER)));
+debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (getLeek()) -> " + (((result = isLeek(getCell(getLeek()))) === getLeek())?("TRUE") : (result + " should be " + CELL_PLAYER)));
 
 StartOperation();
 	isObstacle(obstacles[0]);
-debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + (((result = isObstacle(obstacles[0])) === true)?("TRUE") : (result + " should be " + true)));
+debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (true) -> " + (((result = isObstacle(obstacles[0])) === true)?("TRUE") : (result + " should be " + true)));
 
 StartOperation();
 	isEmptyCell(0);
-debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + (((result = isEmptyCell(0)) === true)?("TRUE") : (result + " should be " + true)));
+debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (true) -> " + (((result = isEmptyCell(0)) === true)?("TRUE") : (result + " should be " + true)));
 
 StartOperation();
 	getLeekOnCell(getCell(getLeek()));
-debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (CELL_PLAYER) -> " + (((result = getLeekOnCell(getCell(getLeek()))) === true)?("TRUE") : (result + " should be " + true)));
+debug((EndOperation()) + " opérations pour getCellContent(getCell(getLeek())) (getCell(getLeek())) -> " + (((result = getLeekOnCell(getCell(getLeek()))) === true)?("TRUE") : (result + " should be " + true)));
