@@ -1,0 +1,24 @@
+ARMES :
+	useWeapon
+	useWeaponOnCell
+
+PUCES :
+	getCooldown
+	useChip
+	useChipOnCell
+
+TERRAIN :
+	getPath
+	getPathLength
+	(generation aléatoire du terrain)
+
+DEPLACEMENT :
+	moveAwayFrom
+	moveAwayFromLeeks
+	moveToward
+	moveTowardLeeks
+
+ORDRE DE JEU :
+	getEntityTurnOrder
+	getNextPlayer
+	getPreviousPlayer
