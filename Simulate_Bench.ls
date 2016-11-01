@@ -13,40 +13,40 @@ NOTE :
 */
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: CONSTANTE DE RETOUR, AFIN DE SIMPLIFIER LE CODES ERREURS
-global SIM_SUCCESS = 1;
+global SIM_SUCCESS = @1;
 
-global SIM_ERR_ID = -1;
-global SIM_ERR_PARAMTYPE = -2;
-global SIM_ERR_PARAM_DATARANGE = -3;
+global SIM_ERR_ID = @-1;
+global SIM_ERR_PARAMTYPE = @-2;
+global SIM_ERR_PARAM_DATARANGE = @-3;
 
 //:: PARAMETRE
 //Couleur pour les displays :
-global COLOR_MAP_OBSTACLE = getColor(255, 255, 255); // Obstacle sur la carte
-global COLOR_MAP_EMPTY = getColor(0, 0, 0); // Cellule vide
-global COLOR_MAP_MYLEEK = getColor(0, 150, 255); // cellule de votre poireau
-global COLOR_MAP_ENEMY = COLOR_RED; // Cellules des enemies
-global COLOR_MAP_ALLY = COLOR_BLUE; // Cellules des alliés
+global COLOR_MAP_OBSTACLE = @getColor(255, 255, 255); // Obstacle sur la carte
+global COLOR_MAP_EMPTY = @getColor(0, 0, 0); // Cellule vide
+global COLOR_MAP_MYLEEK = @getColor(0, 150, 255); // cellule de votre poireau
+global COLOR_MAP_ENEMY = @COLOR_RED; // Cellules des enemies
+global COLOR_MAP_ALLY = @COLOR_BLUE; // Cellules des alliés
 
-global COLOR_TEXT_DESCRIBE = getColor(150, 0, 150); // Debug pour décrire les poireaux
-global COLOR_TEXT_CREATED = getColor(0, 180, 0); // Debug pour afficher la création d'un poireau'
-global COLOR_TEXT_DELETED = getColor(255, 150, 0); // Debug pour la destruction d'un poireau
-global COLOR_TEXT_ERROR = getColor(200, 0, 0); // Debug pour les erreurs
+global COLOR_TEXT_DESCRIBE = @getColor(150, 0, 150); // Debug pour décrire les poireaux
+global COLOR_TEXT_CREATED = @getColor(0, 180, 0); // Debug pour afficher la création d'un poireau'
+global COLOR_TEXT_DELETED = @getColor(255, 150, 0); // Debug pour la destruction d'un poireau
+global COLOR_TEXT_ERROR = @getColor(200, 0, 0); // Debug pour les erreurs
 
 // Indique le tour ou les fonctions sont initialise
-global TURN_TO_INITIALISE = 1;
+global TURN_TO_INITIALISE = @1;
 // Dans le cas où la cellule est occupé par un obstacles, le poireau n'est pas crée
-global CREATMYLEEKFAKEONSTART = false; //True si vous voulez que votre poireau soit crée au lancement de la partie (evite certains msg d'erreur)
+global CREATMYLEEKFAKEONSTART = @false; //True si vous voulez que votre poireau soit crée au lancement de la partie (evite certains msg d'erreur)
 
-global RESETONTURNSTART = false; //True si vous voulez remetre les TPs/MPs... à leur valeur par défaut (TotalTP/TotalMP...)
-global INITIALISEFUNCTION = true; //True si vous voulez utiliser les fonctions natives de simulations
+global RESETONTURNSTART = @false; //True si vous voulez remetre les TPs/MPs... à leur valeur par défaut (TotalTP/TotalMP...)
+global INITIALISEFUNCTION = @true; //True si vous voulez utiliser les fonctions natives de simulations
 
-global SIMULATETP = false; //True si vous voulez retirer des TPs lors d'actions en necessitant
-global SIMULATEMP = false; //True si vous voulez retirer des MPs lors d'actions en necessitant
-global SIMULATEAI = true;
+global SIMULATETP = @false; //True si vous voulez retirer des TPs lors d'actions en necessitant
+global SIMULATEMP = @false; //True si vous voulez retirer des MPs lors d'actions en necessitant
+global SIMULATEAI = @true;
 
 // Carte des obstacles : Veuillez renseigner : 0 pour une cellule vide / 1 pour un obstacle (les poireaux sont à placer au moment de leur création)
-global INITIALISETERRAIN = true; //True si vous voulez utiliser la map du combat, pas celle généré...
-global USETHISMAPGENERATION = true; //True si vous voulez utiliser ce tableau :
+global INITIALISETERRAIN = @true; //True si vous voulez utiliser la map du combat, pas celle généré...
+global USETHISMAPGENERATION = @true; //True si vous voulez utiliser ce tableau :
 global OBSTACLES; OBSTACLES = @[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 								  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
 								0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -119,54 +119,54 @@ global OBSTACLES; OBSTACLES = @[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  
 //		canUseWeaponOnCellFrom (weapon, cell, from) - Retourne true si votre poireau peut attaquer depuis "from" sur "cell" avec l'arme "weapon"
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: GLOBAL
-global ID_Leek = 1000;
-global _Leek = [];
-global _myID = null;
+global ID_Leek = @1000;
+global _Leek = @[];
+global _myID = @null;
 
-global _LastgetLeek = getLeek;
-global _LastgetLevel = getLevel;
-global _LastgetCell = getCell;
-global _LastisAlly = isAlly;
-global _LastisEnemy = isEnemy;
-global _LastgetLife = getLife;
-global _LastgetTotalLife = getTotalLife;
-global _LastgetStrength = getStrength;
-global _LastgetWisdom = getWisdom;
-global _LastgetAgility = getAgility;
-global _LastgetResistance = getResistance;
-global _LastgetScience = getScience;
-global _LastgetMagic = getMagic;
-global _LastgetFrequency = getFrequency;
-global _LastgetTP = getTP;
-global _LastgetMP = getMP;
-global _LastgetWeapon = getWeapon;
-global _LastgetWeapons = getWeapons;
-global _LastgetChips = getChips;
-global _LastisDead = isDead;
-global _LastgetType = getType;
-global _LastisSummon = isSummon;
-global _LastgetSummoner = getSummoner;
-global _LastgetEffects = getEffects;
-global _LastgetLaunchedEffects = getLaunchedEffects;
-global _LastgetAbsoluteShield = getAbsoluteShield;
-global _LastgetRelativeShield = getRelativeShield;
-global _LastgetDamageReturn = getDamageReturn;
-global _LastgetBirthTurn = getBirthTurn;
+global _LastgetLeek 			= @getLeek;
+global _LastgetLevel 			= @getLevel;
+global _LastgetCell 			= @getCell;
+global _LastisAlly 				= @isAlly;
+global _LastisEnemy 			= @isEnemy;
+global _LastgetLife 			= @getLife;
+global _LastgetTotalLife 		= @getTotalLife;
+global _LastgetStrength 		= @getStrength;
+global _LastgetWisdom 			= @getWisdom;
+global _LastgetAgility 			= @getAgility;
+global _LastgetResistance 		= @getResistance;
+global _LastgetScience 			= @getScience;
+global _LastgetMagic 			= @getMagic;
+global _LastgetFrequency 		= @getFrequency;
+global _LastgetTP 				= @getTP;
+global _LastgetMP 				= @getMP;
+global _LastgetWeapon 			= @getWeapon;
+global _LastgetWeapons 			= @getWeapons;
+global _LastgetChips 			= @getChips;
+global _LastisDead 				= @isDead;
+global _LastgetType 			= @getType;
+global _LastisSummon 			= @isSummon;
+global _LastgetSummoner 		= @getSummoner;
+global _LastgetEffects 			= @getEffects;
+global _LastgetLaunchedEffects 	= @getLaunchedEffects;
+global _LastgetAbsoluteShield 	= @getAbsoluteShield;
+global _LastgetRelativeShield 	= @getRelativeShield;
+global _LastgetDamageReturn 	= @getDamageReturn;
+global _LastgetBirthTurn 		= @getBirthTurn;
 
-global _TerrainContent = []; if (getTurn() == 1) fill(_TerrainContent, CELL_EMPTY, 613);
-global _ListObstacles = [];
+global _TerrainContent = @[]; if (getTurn() == 1) fill(_TerrainContent, CELL_EMPTY, 613);
+global _ListObstacles = @[];
 
-global _OPERATIONS = 0;
-global _DeleteAuto = [];
+global _OPERATIONS = @0;
+global _DeleteAuto = @[];
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: DELETE LEEK AUTOMATIQUE
-var foo = _DeleteAuto; _DeleteAuto = [];
-for (var delete in foo) delete[0] === getTurn() && !delete[1]() || !push(_DeleteAuto, delete);
+var foo = _DeleteAuto; _DeleteAuto = @[];
+for (var delete in foo) if (delete[0] > getTurn()) continue; delete[1](); push(_DeleteAuto, delete); }
 //:: REINITIALISATION TP/MP...
 if (RESETONTURNSTART) { //PARAMETRABLE !
 	for (var leek in _Leek) {
-		leek["TP"] = leek["TPMax"];
-		leek["MP"] = leek["MPMax"];
+		leek["TP"] = @leek["TPMax"];
+		leek["MP"] = @leek["MPMax"];
 		//TODO : EFFETS...
 	}
 }
@@ -209,11 +209,11 @@ function DeleteLeekOnTurn (@leek, @turn) {
 function getNewID () { return @ID_Leek++; }
 
 function MyLeekCustom (@ai, @lvl, @cell, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
-	return @(_myID = newLeek(ai, lvl, cell, true, ENTITY_LEEK, null, 1, life, lifeMax, strength, wisdom, agility, resistance, science, magic, frequency, TP, MP, TPMax, MPMax, currentWeapon, weapons, chips, effects, lauchedEffect));
+	return @(_myID = @newLeek(ai, lvl, cell, true, ENTITY_LEEK, null, 1, life, lifeMax, strength, wisdom, agility, resistance, science, magic, frequency, TP, MP, TPMax, MPMax, currentWeapon, weapons, chips, effects, lauchedEffect));
 }
 
 function CreateMyLeekFake (@ai) {
-	return @(_myID = newLeek(ai, getLevel(getLeek()), getCell(getLeek()), true, ENTITY_LEEK, null, getTurn(), getLife(getLeek()), getTotalLife(getLeek()), getStrength(getLeek()), getWisdom(getLeek()), getAgility(getLeek()), getResistance(getLeek()), getScience(getLeek()), getMagic(getLeek()), getFrequency(getLeek()), getTP(getLeek()), getMP(getLeek()), getTotalTP(getLeek()), getTotalMP(getLeek()), getWeapon(getLeek()), getWeapons(getLeek()), getChips(getLeek()), getEffects(getLeek()), getLaunchedEffects(getLeek())));
+	return @(_myID = @newLeek(ai, getLevel(getLeek()), getCell(getLeek()), true, ENTITY_LEEK, null, getTurn(), getLife(getLeek()), getTotalLife(getLeek()), getStrength(getLeek()), getWisdom(getLeek()), getAgility(getLeek()), getResistance(getLeek()), getScience(getLeek()), getMagic(getLeek()), getFrequency(getLeek()), getTP(getLeek()), getMP(getLeek()), getTotalTP(getLeek()), getTotalMP(getLeek()), getWeapon(getLeek()), getWeapons(getLeek()), getChips(getLeek()), getEffects(getLeek()), getLaunchedEffects(getLeek())));
 } 
 
 function DefaultMyLeekCreation (@ai, @cell, @TPMax, @MPMax, @weapon, @weapons, @chips) {
@@ -246,7 +246,7 @@ function newLeek (@ai, @lvl, @cell, @is_Ally, @type, @summoner, @birthTurn, @lif
 	if ((function (arrayE) {for (var E in arrayE) if (typeOf(E) !== TYPE_ARRAY || count(E) != 7) return @false; return @true;}(lauchedEffect)) !== true) { debugC("newLeek - Erreur les effets provoqués par le poireau ne sont pas valides", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
 
 	var id = @getNewID();
-	_TerrainContent[cell] = id; // Afin d'optimiser getCellContent
+	_TerrainContent[cell] = @id; // Afin d'optimiser getCellContent
 	_Leek[id] = @["ai" : ai, "lvl" : lvl, "cell" : cell, "isAlly" : is_Ally, "type" : type, "birthTurn" : birthTurn, "life" : life, "lifeMax" : lifeMax, "strength" : strength, "wisdom" : wisdom, "agility" : agility, "resistance" : resistance, "science" : science, "magic" : magic, "frequency" : frequency, "TP" : TP, "MP" : MP, "TPMax" : TPMax, "MPMax" : MPMax, "currentWeapon" : currentWeapon, "weapons" : weapons, "chips" : chips, "effects" : effects, "lauchedEffects" : lauchedEffect];
 	return @id;
 }
