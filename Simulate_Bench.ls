@@ -44,7 +44,7 @@ global SIMULATETP = false; //True si vous voulez retirer des TPs lors d'actions 
 global SIMULATEMP = false; //True si vous voulez retirer des MPs lors d'actions en necessitant
 
 // Carte des obstacles : Veuillez renseigner : 0 pour une cellule vide / 1 pour un obstacle (les poireaux sont à placer au moment de leur création)
-global INITIALISETERRAIN = true; //True si vous voulez utiliser la map du combat, pas c'elle généré...
+global INITIALISETERRAIN = true; //True si vous voulez utiliser la map du combat, pas celle généré...
 global USETHISMAPGENERATION = true; //True si vous voulez utiliser ce tableau :
 global OBSTACLES; OBSTACLES = @[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 					  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
@@ -463,186 +463,162 @@ function INIATIALISATION_FONCTIONS () {
 //:: FONCTIONS POIREAUX
 StartOperation();
 var nbr = 0;
-getLeek = function () {
+getLeek = @(function () {
 	if (_myID === null) return @SIM_ERR_ID;
 	return @_myID;
+});
+nbr++;
+getLevel = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["lvl"]);
+});
+nbr++;
+getCell = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["cell"]);
+});
+nbr++;
+isAlly = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["isAlly"]);
+});
+nbr++;
+isEnemy = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : !tmp["isAlly"]);
+});
+nbr++;
+getLife = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["life"]);
+});
+nbr++;
+getTotalLife = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["lifeMax"]);
+});
+nbr++;
+getStrength = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["strength"]);
+});
+nbr++;
+getWisdom = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["wisdom"]);
+});
+nbr++;
+getAgility = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["agility"]);
+});
+nbr++;
+getResistance = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["resistance"]);
+});
+nbr++;
+getScience = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["science"]);
 };
 nbr++;
-getLevel = function (@leek) {
-	return @_Leek[leek]["lvl"];
-};
+getMagic = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["magic"]);
+});
 nbr++;
-getCell = function (@leek) {
-	return @_Leek[leek]["cell"];
-};
+getFrequency = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["frequency"]);
+});
 nbr++;
-isAlly = function (leek) {
+getTP = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["TP"]);
+});
+nbr++;
+getMP = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["MP"]);
+});
+nbr++;
+getTotalTP = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["TPMax"]);
+});
+nbr++;
+getTotalMP = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["MPMax"]);
+});
+nbr++;
+getWeapon = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["currentWeapon"]);
+});
+nbr++;
+getWeapons = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["weapons"]);
+});
+nbr++;
+getChips = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["chips"]);
+});
+nbr++;
+isDead = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["life"] <= 0);
+});
+nbr++;
+getType = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["type"]);
+});
+nbr++;
+isSummon = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["summoner"] === null);
+});
+nbr++;
+getSummoner = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["summoner"]);
+});
+nbr++;
+getEffects = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["effects"]);
+});
+nbr++;
+getLaunchedEffects = @(function (@leek) {
 	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("isAlly - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastisAlly(leek); }
-	return _Leek[leek]["isAlly"];
-};
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["lauchedEffects"]);
+});
 nbr++;
-isEnemy = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("isEnemy - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastisEnemy(leek); }
-	return !_Leek[leek]["isAlly"];
-};
+getAbsoluteShield = @(function (@leek) {
+	return ;
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : tmp["lifeMax"]);
+});
 nbr++;
-getLife = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getLife - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetLife(leek); }
-	return _Leek[leek]["life"];
-};
+getRelativeShield = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : (Effect_TotalValue(leek, EFFECT_ABSOLUTE_SHIELD) * (1 + getResistance(leek)/100)));
+});
 nbr++;
-getTotalLife = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getTotalLife - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetTotalLife(leek); }
-	return _Leek[leek]["lifeMax"];
-};
+getDamageReturn = @(function (@leek) {
+	var tmp = @_Leek[leek]
+	return @(tmp === null ? null : (Effect_TotalValue(leek, EFFECT_DAMAGE_RETURN) * (1 + getAgility(leek)/100)));
+});
 nbr++;
-getStrength = function (leek) { 
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getStrength - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetStrength(leek); }
-	return _Leek[leek]["strength"];
-};
-nbr++;
-getWisdom = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getWisdom - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetWisdom(leek); }
-	return _Leek[leek]["wisdom"];
-};
-nbr++;
-getAgility = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getAgility - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetAgility(leek); }
-	return _Leek[leek]["agility"];
-};
-nbr++;
-getResistance = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getResistance - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetResistance(leek); }
-	return _Leek[leek]["resistance"];
-};
-nbr++;
-getScience = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getScience - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetScience(leek); }
-	return _Leek[leek]["science"];
-};
-nbr++;
-getMagic = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getMagic - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetMagic(leek); }
-	return _Leek[leek]["magic"];
-};
-nbr++;
-getFrequency = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getFrequency - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetFrequency(leek); }
-	return _Leek[leek]["frequency"];
-};
-nbr++;
-getTP = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getTP - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetTP(leek); }
-	return _Leek[leek]["TP"];
-};
-nbr++;
-getMP = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getMP - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetMP(leek); }
-	return _Leek[leek]["MP"];
-};
-nbr++;
-getTotalTP = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getTotalTP - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetTP(leek); }
-	return _Leek[leek]["TPMax"];
-};
-nbr++;
-getTotalMP = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getTotalMP - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetMP(leek); }
-	return _Leek[leek]["MPMax"];
-};
-nbr++;
-getWeapon = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getWeapon - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetWeapon(leek); }
-	return _Leek[leek]["currentWeapon"];
-};
-nbr++;
-getWeapons = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getWeapons - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetWeapons(leek); }
-	return _Leek[leek]["weapons"];
-};
-nbr++;
-getChips = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getChips - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetChips(leek); }
-	return _Leek[leek]["chips"];
-};
-nbr++;
-isDead = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("isDead - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastisDead(leek); }
-	return (_Leek[leek]["life"] <= 0);
-};
-nbr++;
-getType = function (entity) {
-	if (entity === null) return;
-	if (_Leek[entity] === null) { debugC("getType - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetType(entity); }
-	return _Leek[entity]["type"];
-};
-nbr++;
-isSummon = function (entity) {
-	if (entity === null) return;
-	if (_Leek[entity] === null) { debugC("isSummon - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastisSummon(entity); }
-	return (typeOf(_Leek[entity]["summoner"] !== TYPE_NULL));
-};
-nbr++;
-getSummoner = function (entity) {
-	if (entity === null) return;
-	if (_Leek[entity] === null) { debugC("getSummoner - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetSummoner(entity); }
-	return _Leek[entity]["summoner"];
-};
-nbr++;
-getEffects = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getEffects - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetEffects(leek); }
-	return _Leek[leek]["effects"];
-};
-nbr++;
-getLaunchedEffects = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getLaunchedEffects - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetLaunchedEffects(leek); }
-	return _Leek[leek]["lauchedEffects"];
-};
-nbr++;
-getAbsoluteShield = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getAbsoluteShield - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetAbsoluteShield(leek); }
-	return (Effect_TotalValue(leek, EFFECT_ABSOLUTE_SHIELD) * (1 + getResistance(leek)/100));
-};
-nbr++;
-getRelativeShield = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getRelativeShield - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetRelativeShield(leek); }
-	return (Effect_TotalValue(leek, EFFECT_RELATIVE_SHIELD) * (1 + getResistance(leek)/100));
-};
-nbr++;
-getDamageReturn = function (leek) {
-	if (leek === null) return;
-	if (_Leek[leek] === null) { debugC("getDamageReturn - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetDamageReturn(leek); }
-	return (Effect_TotalValue(leek, EFFECT_DAMAGE_RETURN) * (1 + getAgility(leek)/100));
-};
-nbr++;
-getBirthTurn = function (entity) {
-	if (entity === null) return;
-	if (_Leek[entity] === null) { debugC("getRelativeShield - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return _LastgetBirthTurn(entity); }
-	return _Leek[entity]["birthTurn"];
-};
+getBirthTurn = @(function (@leek) {
+	var tmp = @_Leek[entity]
+	return @(tmp === null ? null : tmp["birthTurn"]);
+});
 nbr++;
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: FONCTION COMBAT
