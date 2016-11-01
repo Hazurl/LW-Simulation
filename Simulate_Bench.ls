@@ -42,6 +42,7 @@ global INITIALISEFUNCTION = true; //True si vous voulez utiliser les fonctions n
 
 global SIMULATETP = false; //True si vous voulez retirer des TPs lors d'actions en necessitant
 global SIMULATEMP = false; //True si vous voulez retirer des MPs lors d'actions en necessitant
+global SIMULATEAI = true;
 
 // Carte des obstacles : Veuillez renseigner : 0 pour une cellule vide / 1 pour un obstacle (les poireaux sont à placer au moment de leur création)
 global INITIALISETERRAIN = true; //True si vous voulez utiliser la map du combat, pas celle généré...
@@ -207,26 +208,26 @@ function DeleteLeekOnTurn (@leek, @turn) {
 
 function getNewID () { return @ID_Leek++; }
 
-function MyLeekCustom (@lvl, @cell, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
-	return @(_myID = newLeek(lvl, cell, true, ENTITY_LEEK, null, 1, life, lifeMax, strength, wisdom, agility, resistance, science, magic, frequency, TP, MP, TPMax, MPMax, currentWeapon, weapons, chips, effects, lauchedEffect));
+function MyLeekCustom (@ai, @lvl, @cell, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
+	return @(_myID = newLeek(ai, lvl, cell, true, ENTITY_LEEK, null, 1, life, lifeMax, strength, wisdom, agility, resistance, science, magic, frequency, TP, MP, TPMax, MPMax, currentWeapon, weapons, chips, effects, lauchedEffect));
 }
 
-function CreateMyLeekFake () {
-	return @(_myID = newLeek(getLevel(getLeek()), getCell(getLeek()), true, ENTITY_LEEK, null, getTurn(), getLife(getLeek()), getTotalLife(getLeek()), getStrength(getLeek()), getWisdom(getLeek()), getAgility(getLeek()), getResistance(getLeek()), getScience(getLeek()), getMagic(getLeek()), getFrequency(getLeek()), getTP(getLeek()), getMP(getLeek()), getTotalTP(getLeek()), getTotalMP(getLeek()), getWeapon(getLeek()), getWeapons(getLeek()), getChips(getLeek()), getEffects(getLeek()), getLaunchedEffects(getLeek())));
+function CreateMyLeekFake (@ai) {
+	return @(_myID = newLeek(ai, getLevel(getLeek()), getCell(getLeek()), true, ENTITY_LEEK, null, getTurn(), getLife(getLeek()), getTotalLife(getLeek()), getStrength(getLeek()), getWisdom(getLeek()), getAgility(getLeek()), getResistance(getLeek()), getScience(getLeek()), getMagic(getLeek()), getFrequency(getLeek()), getTP(getLeek()), getMP(getLeek()), getTotalTP(getLeek()), getTotalMP(getLeek()), getWeapon(getLeek()), getWeapons(getLeek()), getChips(getLeek()), getEffects(getLeek()), getLaunchedEffects(getLeek())));
 } 
 
-function DefaultMyLeekCreation (@cell, @TPMax, @MPMax, @weapon, @weapons, @chips) {
-	return @MyLeekCustom(1, cell, 1000, 1000, 0, 0, 0, 0, 0, 0, 100, TPMax, MPMax, TPMax, MPMax, weapon, weapons, chips, [], []);
+function DefaultMyLeekCreation (@ai, @cell, @TPMax, @MPMax, @weapon, @weapons, @chips) {
+	return @MyLeekCustom(ai, 1, cell, 1000, 1000, 0, 0, 0, 0, 0, 0, 100, TPMax, MPMax, TPMax, MPMax, weapon, weapons, chips, [], []);
 }
 
-function DefaultLeekCreation (@cell, @TPMax, @MPMax, @weapon, @weapons, @chips) {
-	return @newLeek(1, cell, false, ENTITY_LEEK, null, getTurn(), 1000, 1000, 0, 0, 0, 0, 0, 0, 100, TPMax, MPMax, TPMax, MPMax, weapon, weapons, chips, [], []);
+function DefaultLeekCreation (@ai, @cell, @TPMax, @MPMax, @weapon, @weapons, @chips) {
+	return @newLeek(ai, 1, cell, false, ENTITY_LEEK, null, getTurn(), 1000, 1000, 0, 0, 0, 0, 0, 0, 100, TPMax, MPMax, TPMax, MPMax, weapon, weapons, chips, [], []);
 }
 
-function newLeek (@lvl, @cell, @is_Ally, @type, @summoner, @birthTurn, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
+function newLeek (@ai, @lvl, @cell, @is_Ally, @type, @summoner, @birthTurn, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
 
 // Première vérification : le type des paramètres
-	if (typeOf(lvl) != TYPE_NUMBER || typeOf(cell) != TYPE_NUMBER || typeOf(is_Ally) != TYPE_BOOLEAN || typeOf(type) != TYPE_NUMBER || (typeOf(summoner) != TYPE_NUMBER && typeOf(summoner) != TYPE_NULL)  || typeOf(birthTurn) != TYPE_NUMBER || typeOf(life) != TYPE_NUMBER || typeOf(lifeMax) != TYPE_NUMBER || typeOf(strength) != TYPE_NUMBER || typeOf(wisdom) != TYPE_NUMBER || typeOf(agility) != TYPE_NUMBER || typeOf(resistance) != TYPE_NUMBER || typeOf(science) != TYPE_NUMBER || typeOf(magic) != TYPE_NUMBER || typeOf(frequency) != TYPE_NUMBER || typeOf(TP) != TYPE_NUMBER || typeOf(MP) != TYPE_NUMBER || typeOf(TPMax) != TYPE_NUMBER || typeOf(MPMax) != TYPE_NUMBER || (typeOf(currentWeapon) != TYPE_NUMBER && typeOf(currentWeapon) != TYPE_NULL) || typeOf(weapons) != TYPE_ARRAY || typeOf(chips) != TYPE_ARRAY || typeOf(effects) != TYPE_ARRAY || typeOf(lauchedEffect) != TYPE_ARRAY) return @SIM_ERR_PARAMTYPE;
+	if (typeOf(ai) != TYPE_FUNCTION || typeOf(lvl) != TYPE_NUMBER || typeOf(cell) != TYPE_NUMBER || typeOf(is_Ally) != TYPE_BOOLEAN || typeOf(type) != TYPE_NUMBER || (typeOf(summoner) != TYPE_NUMBER && typeOf(summoner) != TYPE_NULL)  || typeOf(birthTurn) != TYPE_NUMBER || typeOf(life) != TYPE_NUMBER || typeOf(lifeMax) != TYPE_NUMBER || typeOf(strength) != TYPE_NUMBER || typeOf(wisdom) != TYPE_NUMBER || typeOf(agility) != TYPE_NUMBER || typeOf(resistance) != TYPE_NUMBER || typeOf(science) != TYPE_NUMBER || typeOf(magic) != TYPE_NUMBER || typeOf(frequency) != TYPE_NUMBER || typeOf(TP) != TYPE_NUMBER || typeOf(MP) != TYPE_NUMBER || typeOf(TPMax) != TYPE_NUMBER || typeOf(MPMax) != TYPE_NUMBER || (typeOf(currentWeapon) != TYPE_NUMBER && typeOf(currentWeapon) != TYPE_NULL) || typeOf(weapons) != TYPE_ARRAY || typeOf(chips) != TYPE_ARRAY || typeOf(effects) != TYPE_ARRAY || typeOf(lauchedEffect) != TYPE_ARRAY) return @SIM_ERR_PARAMTYPE;
 
 // Seconde vérification : Les plages de données à respecter ainsi que d'autres conditions
 	if (lvl < 1 || lvl > 301) { debugC("newLeek - Erreur le level dois être compris entre 1 et 301", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
@@ -246,7 +247,7 @@ function newLeek (@lvl, @cell, @is_Ally, @type, @summoner, @birthTurn, @life, @l
 
 	var id = @getNewID();
 	_TerrainContent[cell] = id; // Afin d'optimiser getCellContent
-	_Leek[id] = @["lvl" : lvl, "cell" : cell, "isAlly" : is_Ally, "type" : type, "birthTurn" : birthTurn, "life" : life, "lifeMax" : lifeMax, "strength" : strength, "wisdom" : wisdom, "agility" : agility, "resistance" : resistance, "science" : science, "magic" : magic, "frequency" : frequency, "TP" : TP, "MP" : MP, "TPMax" : TPMax, "MPMax" : MPMax, "currentWeapon" : currentWeapon, "weapons" : weapons, "chips" : chips, "effects" : effects, "lauchedEffects" : lauchedEffect];
+	_Leek[id] = @["ai" : ai, "lvl" : lvl, "cell" : cell, "isAlly" : is_Ally, "type" : type, "birthTurn" : birthTurn, "life" : life, "lifeMax" : lifeMax, "strength" : strength, "wisdom" : wisdom, "agility" : agility, "resistance" : resistance, "science" : science, "magic" : magic, "frequency" : frequency, "TP" : TP, "MP" : MP, "TPMax" : TPMax, "MPMax" : MPMax, "currentWeapon" : currentWeapon, "weapons" : weapons, "chips" : chips, "effects" : effects, "lauchedEffects" : lauchedEffect];
 	return @id;
 }
 
@@ -285,6 +286,12 @@ function ChangeWeapon (@leek, @weapon) {
 	 if (!inArray(_Leek[leek]["weapons"], weapon)) return @SIM_ERR_PARAM_DATARANGE;
 	 if (!isWeapon(weapon)) return @SIM_ERR_PARAMTYPE;
 	 _Leek[leek]["currentWeapon"] = weapon; return SIM_SUCCESS;
+}
+
+function SetAI (@leek, @ai) {
+	if (_Leek[leek] === null) return @SIM_ERR_ID; 
+	if (typeOf(ai) !== TYPE_FUNCTION) return @SIM_ERR_PARAMTYPE;
+	_Leek[leek]["ai"] = ai; return @SIM_SUCCESS;
 }
 
 function SetCell (@leek, @cell) {
