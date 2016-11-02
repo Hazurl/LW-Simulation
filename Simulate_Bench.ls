@@ -432,13 +432,31 @@ function Area (@origine, @rayon) {
 	for (var celltmp : var d in cells) if (!isObstacle(celltmp)) push(tmp, celltmp); // On utilise pas arrayfilter pour ne pas intergrer des cles foireuses...
     return @tmp;
 }
+
+function TurnStart (@leek) {
+	var eff = @leek["effects"]
+	var newEff = @[];
+	for(var i = 0; i < count(eff); i++) {
+		var cur = @eff[i];
+		if ((--cur[3]) > 0)
+			push(newEff, cur);
+	}
+	leek["effects"] = @newEff;
+}
+
+function TurnEnd (@leek) {
+	leek["TP"] = @leek["TPMax"];
+	leek["MP"] = @leek["MPMax"];
+
+	// Baisser cooldowns Chips
+}
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: FONCTIONS TERRAIN
 function INIATIALISATION_TERRAIN () {
 StartOperation();
 var nbr = 0;
 getCellContent = function (@cell) {
-	if (typeOf(_TerrainContent[cell]) == TYPE_NULL) return SIM_ERR_PARAM_DATARANGE;
+	if (_TerrainContent[cell] === null) return SIM_ERR_PARAM_DATARANGE;
 	var content = @_TerrainContent[cell];
 	return @((_TerrainContent[cell] !== CELL_EMPTY && _TerrainContent[cell] !== CELL_OBSTACLE)? CELL_PLAYER : content);
 };
