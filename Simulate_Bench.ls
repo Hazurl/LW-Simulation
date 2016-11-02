@@ -156,12 +156,12 @@ global _LastgetBirthTurn 		= @getBirthTurn;
 global _TerrainContent = @[]; if (getTurn() == 1) fill(_TerrainContent, CELL_EMPTY, 613);
 global _ListObstacles = @[];
 
-global _OPERATIONS = @0;
+global ___OPERATIONS = @0;
 global _DeleteAuto = @[];
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: DELETE LEEK AUTOMATIQUE
 var foo = _DeleteAuto; _DeleteAuto = @[];
-for (var delete in foo) if (delete[0] > getTurn()) continue; delete[1](); push(_DeleteAuto, delete); }
+for (var delete in foo) { if (delete[0] > getTurn()) continue; delete[1](); push(_DeleteAuto, delete); }
 //:: REINITIALISATION TP/MP...
 if (RESETONTURNSTART) { //PARAMETRABLE !
 	for (var leek in _Leek) {
@@ -177,13 +177,13 @@ if (INITIALISETERRAIN) {INIATIALISATION_TERRAIN(); 			//PARAMETRABLE !
 //:: CREATION DU TERRAIN
 if (USETHISMAPGENERATION) {Generate_Terrain(OBSTACLES);}} 	//PARAMETRABLE !
 //:: CREATION DE SON POIREAU AUTOMATIQUEMENT
-if (CREATMYLEEKFAKEONSTART) {CreateMyLeekFake();} 			//PARAMETRABLE !
+if (CREATMYLEEKFAKEONSTART) {CreateMyLeekFake(function () {});} 			//PARAMETRABLE !
 //:: INITAILISATION TERRAIN
 if (INITIALISEFUNCTION) {INIATIALISATION_FONCTIONS();} 		//PARAMETRABLE !
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: FONCTION CUSTOM
-function StartOperation () {_OPERATIONS = getOperations();}
-function EndOperation () {return getOperations() - _OPERATIONS - 4;}
+function _StartOperation () {___OPERATIONS = getOperations();}
+function _EndOperation () {return getOperations() - ___OPERATIONS - 4;}
 
 function DisplayMap () {
 	for (var i = 0; i < 613; i++) mark(i, COLOR_MAP_EMPTY, 100);
@@ -434,7 +434,7 @@ function Area (@origine, @rayon) {
 }
 
 function TurnStart (@leek) {
-	var eff = @leek["effects"]
+	var eff = @leek["effects"];
 	var newEff = @[];
 	for(var i = 0; i < count(eff); i++) {
 		var cur = @eff[i];
@@ -453,7 +453,7 @@ function TurnEnd (@leek) {
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: FONCTIONS TERRAIN
 function INIATIALISATION_TERRAIN () {
-StartOperation();
+_StartOperation();
 var nbr = 0;
 getCellContent = function (@cell) {
 	if (_TerrainContent[cell] === null) return SIM_ERR_PARAM_DATARANGE;
@@ -481,12 +481,12 @@ getLeekOnCell = function (@cell) {
 	return @((isLeek(cell)) ? _TerrainContent[cell] : null);
 };
 nbr++;
-debugC("INIATIALISATION_TERRAIN - " + nbr + " fonctions recodées en " + EndOperation()  + " opérations.", COLOR_TEXT_DESCRIBE);
+debugC("INIATIALISATION_TERRAIN - " + nbr + " fonctions recodées en " + _EndOperation()  + " opérations.", COLOR_TEXT_DESCRIBE);
 }
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 function INIATIALISATION_FONCTIONS () {
 //:: FONCTIONS POIREAUX
-StartOperation();
+_StartOperation();
 var nbr = 0;
 getLeek = @(function () {
 	if (_myID === null) return @SIM_ERR_ID;
@@ -494,154 +494,152 @@ getLeek = @(function () {
 });
 nbr++;
 getLevel = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["lvl"]);
 });
 nbr++;
 getCell = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["cell"]);
 });
 nbr++;
 isAlly = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["isAlly"]);
 });
 nbr++;
 isEnemy = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : !tmp["isAlly"]);
 });
 nbr++;
 getLife = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["life"]);
 });
 nbr++;
 getTotalLife = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["lifeMax"]);
 });
 nbr++;
 getStrength = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["strength"]);
 });
 nbr++;
 getWisdom = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["wisdom"]);
 });
 nbr++;
 getAgility = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["agility"]);
 });
 nbr++;
 getResistance = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["resistance"]);
 });
 nbr++;
 getScience = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["science"]);
-};
+});
 nbr++;
 getMagic = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["magic"]);
 });
 nbr++;
 getFrequency = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["frequency"]);
 });
 nbr++;
 getTP = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["TP"]);
 });
 nbr++;
 getMP = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["MP"]);
 });
 nbr++;
 getTotalTP = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["TPMax"]);
 });
 nbr++;
 getTotalMP = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["MPMax"]);
 });
 nbr++;
 getWeapon = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["currentWeapon"]);
 });
 nbr++;
 getWeapons = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["weapons"]);
 });
 nbr++;
 getChips = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["chips"]);
 });
 nbr++;
 isDead = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["life"] <= 0);
 });
 nbr++;
 getType = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["type"]);
 });
 nbr++;
 isSummon = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["summoner"] === null);
 });
 nbr++;
 getSummoner = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["summoner"]);
 });
 nbr++;
 getEffects = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["effects"]);
 });
 nbr++;
 getLaunchedEffects = @(function (@leek) {
-	if (leek === null) return;
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["lauchedEffects"]);
 });
 nbr++;
 getAbsoluteShield = @(function (@leek) {
-	return ;
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["lifeMax"]);
 });
 nbr++;
 getRelativeShield = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : (Effect_TotalValue(leek, EFFECT_ABSOLUTE_SHIELD) * (1 + getResistance(leek)/100)));
 });
 nbr++;
 getDamageReturn = @(function (@leek) {
-	var tmp = @_Leek[leek]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : (Effect_TotalValue(leek, EFFECT_DAMAGE_RETURN) * (1 + getAgility(leek)/100)));
 });
 nbr++;
 getBirthTurn = @(function (@leek) {
-	var tmp = @_Leek[entity]
+	var tmp = @_Leek[leek];
 	return @(tmp === null ? null : tmp["birthTurn"]);
 });
 nbr++;
@@ -814,7 +812,7 @@ setWeapon = function (weapon) {
 	_Leek[getLeek()]["currentWeapon"] = weapon;
 };
 nbr++;
-debugC("INIATIALISATION_FUNCTION - " + nbr + " fonctions recodées en " + EndOperation()  + " opérations.", COLOR_TEXT_DESCRIBE);
+debugC("INIATIALISATION_FUNCTION - " + nbr + " fonctions recodées en " + _EndOperation()  + " opérations.", COLOR_TEXT_DESCRIBE);
 }
 
 lineOfSight = function (start, end, leekToIgnore) {
@@ -994,7 +992,7 @@ summon = function (chip, cell, ai) {
 		chips = [CHIP_SHOCK, CHIP_FLASH, CHIP_LIGHTNING, CHIP_DOPING];
 	} else { debugC("summon - Erreur la puce renseigner n'est pas un bulbe", COLOR_TEXT_ERROR); return null; }
 	
-	 return newLeek(getLevel(getLeek()), cell, true, ENTITY_BULB, getLeek(), getTurn(), lifeMax, lifeMax, strength, wisdom, agility, resistance, science, 0, 0, TPMax, MPMax, TPMax, MPMax, null, [], chips, [], []);
+	 return newLeek(ai, getLevel(getLeek()), cell, true, ENTITY_BULB, getLeek(), getTurn(), lifeMax, lifeMax, strength, wisdom, agility, resistance, science, 0, 0, TPMax, MPMax, TPMax, MPMax, null, [], chips, [], []);
 };
 
 getWeaponEffectiveArea = function(weapon, cell, from) {
