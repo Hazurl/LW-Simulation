@@ -46,49 +46,49 @@ if (debugLeekFunction) {
 
 	bench_verify(ToFr_0(getLeek)(), getLeek(), 'getLeek');
 
-	bench_verify(ToFr_0(getLevel)(), 139, 'getLevel');
+	bench_verify(ToFr_1(getLevel)(getLeek()), 139, 'getLevel');
 
-	bench_verify(ToFr_0(getStrength)(), 300, 'getStrength');
+	bench_verify(ToFr_1(getStrength)(getLeek()), 300, 'getStrength');
 
-	bench_verify(ToFr_0(getLife)(), 874, 'getLife');
+	bench_verify(ToFr_1(getLife)(getLeek()), 874, 'getLife');
 
-	bench_verify(ToFr_0(getTotalLife)(), 874, 'getTotalLife');
+	bench_verify(ToFr_1(getTotalLife)(getLeek()), 874, 'getTotalLife');
 
-	bench_verify(ToFr_0(getWisdom)(), 0, 'getWisdom');
+	bench_verify(ToFr_1(getWisdom)(getLeek()), 0, 'getWisdom');
 
-	bench_verify(ToFr_0(getAgility)(), 0, 'getAgility');
+	bench_verify(ToFr_1(getAgility)(getLeek()), 0, 'getAgility');
 
-	bench_verify(ToFr_0(getResistance)(), 300, 'getResistance');
+	bench_verify(ToFr_1(getResistance)(getLeek()), 300, 'getResistance');
 
-	bench_verify(ToFr_0(getScience)(), 0, 'getScience');
+	bench_verify(ToFr_1(getScience)(getLeek()), 0, 'getScience');
 
-	bench_verify(ToFr_0(getMagic)(), 0, 'getMagic');
+	bench_verify(ToFr_1(getMagic)(getLeek()), 0, 'getMagic');
 
-	bench_verify(ToFr_0(getFrequency)(), 100, 'getFrequency');
+	bench_verify(ToFr_1(getFrequency)(getLeek()), 100, 'getFrequency');
 
-	bench_verify(ToFr_0(getTP)(), 10, 'getTP');
+	bench_verify(ToFr_1(getTP)(getLeek()), 10, 'getTP');
 
-	bench_verify(ToFr_0(getTotalTP)(), 10, 'getTotalTP');
+	bench_verify(ToFr_1(getTotalTP)(getLeek()), 10, 'getTotalTP');
 
-	bench_verify(ToFr_0(getMP)(), 4, 'getMP');
+	bench_verify(ToFr_1(getMP)(getLeek()), 4, 'getMP');
 
-	bench_verify(ToFr_0(getWeapon)(), null, 'getWeapon');
+	bench_verify(ToFr_1(getWeapon)(getLeek()), null, 'getWeapon');
 
-	bench_verify(ToFr_0(getWeapons)(), [109, 43], 'getWeapons');
+	bench_verify(ToFr_1(getWeapons)(getLeek()), [109, 43], 'getWeapons');
 
-	bench_verify(ToFr_0(getChips)(), [8, 18, 20, 21, 22, 29, 32, 33, 34], 'getChips');
+	bench_verify(ToFr_1(getChips)(getLeek()), [8, 18, 20, 21, 22, 29, 32, 33, 34], 'getChips');
 
-	bench_verify(ToFr_0(getSummoner)(), -1, 'getSummoner');
+	bench_verify(ToFr_1(getSummoner)(getLeek()), -1, 'getSummoner');
 
-	bench_verify(ToFr_0(getEffects)(), [], 'getEffects');
+	bench_verify(ToFr_1(getEffects)(getLeek()), [], 'getEffects');
 
-	bench_verify(ToFr_0(getLaunchedEffects)(), [], 'getLaunchedEffects');
+	bench_verify(ToFr_1(getLaunchedEffects)(getLeek()), [], 'getLaunchedEffects');
 
-	bench_verify(ToFr_0(getBirthTurn)(), 1, 'getBirthTurn');
+	bench_verify(ToFr_1(getBirthTurn)(getLeek()), 1, 'getBirthTurn');
 
-	bench_verify(ToFr_0(isSummon)(), false, 'isSummon');
+	bench_verify(ToFr_1(isSummon)(getLeek()), false, 'isSummon');
 
-	bench_verify(ToFr_0(getType)(), ENTITY_LEEK, 'getType');
+	bench_verify(ToFr_1(getType)(getLeek()), ENTITY_LEEK, 'getType');
 
 	bench_verify(ToFr_1(isAlly)(getLeek()), true, 'isAlly');
 
