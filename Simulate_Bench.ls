@@ -608,12 +608,13 @@ getType = @(function (@leek) {
 nbr++;
 isSummon = @(function (@leek) {
 	var tmp = @_Leek[leek];
-	return @(tmp === null ? null : tmp["summoner"] === null);
+	return @(tmp === null ? null : tmp["summoner"] !== null);
 });
 nbr++;
 getSummoner = @(function (@leek) {
 	var tmp = @_Leek[leek];
-	return @(tmp === null ? null : tmp["summoner"]);
+	var _tmp = @tmp["summoner"];
+	return @(tmp === null ? null : (_tmp === null ? -1 : _tmp));
 });
 nbr++;
 getEffects = @(function (@leek) {
