@@ -628,12 +628,12 @@ getLaunchedEffects = @(function (@leek) {
 nbr++;
 getAbsoluteShield = @(function (@leek) {
 	var tmp = @_Leek[leek];
-	return @(tmp === null ? null : tmp["lifeMax"]);
+	return @(tmp === null ? null : (Effect_TotalValue(leek, EFFECT_ABSOLUTE_SHIELD) * (1 + getResistance(leek)/100)));
 });
 nbr++;
 getRelativeShield = @(function (@leek) {
 	var tmp = @_Leek[leek];
-	return @(tmp === null ? null : (Effect_TotalValue(leek, EFFECT_ABSOLUTE_SHIELD) * (1 + getResistance(leek)/100)));
+	return @(tmp === null ? null : (Effect_TotalValue(leek, EFFECT_RELATIVE_SHIELD) * (1 + getResistance(leek)/100)));
 });
 nbr++;
 getDamageReturn = @(function (@leek) {
