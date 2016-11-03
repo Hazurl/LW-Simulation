@@ -508,12 +508,12 @@ getCell = @(function (@leek) {
 nbr++;
 isAlly = @(function (@leek) {
 	var tmp = @_Leek[leek];
-	return @(tmp === null ? null : tmp["isAlly"]);
+	return @(tmp === null ? false : tmp["isAlly"]);
 });
 nbr++;
 isEnemy = @(function (@leek) {
 	var tmp = @_Leek[leek];
-	return @(tmp === null ? null : !tmp["isAlly"]);
+	return @(tmp === null ? false : !tmp["isAlly"]);
 });
 nbr++;
 getLife = @(function (@leek) {
