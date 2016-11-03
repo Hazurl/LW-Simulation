@@ -456,9 +456,9 @@ function INIATIALISATION_TERRAIN () {
 _StartOperation();
 var nbr = 0;
 getCellContent = function (@cell) {
-	if (_TerrainContent[cell] === null) return SIM_ERR_PARAM_DATARANGE;
 	var content = @_TerrainContent[cell];
-	return @((_TerrainContent[cell] !== CELL_EMPTY && _TerrainContent[cell] !== CELL_OBSTACLE)? CELL_PLAYER : content);
+	if (content === null) return -1;
+	return @((content !== CELL_EMPTY && content !== CELL_OBSTACLE)? CELL_PLAYER : content);
 };
 nbr++;
 getObstacles = function () {
@@ -474,11 +474,14 @@ isLeek = function (@cell) {
 };
 nbr++;
 isObstacle = function (@cell) {
-	return (_TerrainContent[cell] === CELL_OBSTACLE);
+	var content = @_TerrainContent[cell];
+	return @(content === CELL_OBSTACLE || content === null ? true : false);
 };
 nbr++;
 getLeekOnCell = function (@cell) {
-	return @((isLeek(cell)) ? _TerrainContent[cell] : null);
+	var content = @_TerrainContent[cell];
+	if (content === null) return -1;
+	return @((content === CELL_EMPTY  || content === CELL_OBSTACLE || content === null)? -1 : content);
 };
 nbr++;
 debugC("INIATIALISATION_TERRAIN - " + nbr + " fonctions recodées en " + _EndOperation()  + " opérations.", COLOR_TEXT_DESCRIBE);
