@@ -224,14 +224,15 @@ function DefaultLeekCreation (@ai, @cell, @TPMax, @MPMax, @weapon, @weapons, @ch
 	return @newLeek(ai, 1, cell, false, ENTITY_LEEK, null, getTurn(), 1000, 1000, 0, 0, 0, 0, 0, 0, 100, TPMax, MPMax, TPMax, MPMax, weapon, weapons, chips, [], []);
 }
 
-function newLeek (@ai, @lvl, @cell, @is_Ally, @type, @summoner, @birthTurn, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
+function newLeek (@ai, @lvl, @cell, @teamID, @type, @summoner, @birthTurn, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
 
 // Première vérification : le type des paramètres
-	if (typeOf(ai) != TYPE_FUNCTION || typeOf(lvl) != TYPE_NUMBER || typeOf(cell) != TYPE_NUMBER || typeOf(is_Ally) != TYPE_BOOLEAN || typeOf(type) != TYPE_NUMBER || (typeOf(summoner) != TYPE_NUMBER && typeOf(summoner) != TYPE_NULL)  || typeOf(birthTurn) != TYPE_NUMBER || typeOf(life) != TYPE_NUMBER || typeOf(lifeMax) != TYPE_NUMBER || typeOf(strength) != TYPE_NUMBER || typeOf(wisdom) != TYPE_NUMBER || typeOf(agility) != TYPE_NUMBER || typeOf(resistance) != TYPE_NUMBER || typeOf(science) != TYPE_NUMBER || typeOf(magic) != TYPE_NUMBER || typeOf(frequency) != TYPE_NUMBER || typeOf(TP) != TYPE_NUMBER || typeOf(MP) != TYPE_NUMBER || typeOf(TPMax) != TYPE_NUMBER || typeOf(MPMax) != TYPE_NUMBER || (typeOf(currentWeapon) != TYPE_NUMBER && typeOf(currentWeapon) != TYPE_NULL) || typeOf(weapons) != TYPE_ARRAY || typeOf(chips) != TYPE_ARRAY || typeOf(effects) != TYPE_ARRAY || typeOf(lauchedEffect) != TYPE_ARRAY) return @SIM_ERR_PARAMTYPE;
+	if (typeOf(ai) != TYPE_FUNCTION || typeOf(lvl) != TYPE_NUMBER || typeOf(cell) != TYPE_NUMBER || typeOf(teamID) != TYPE_NUMBER || typeOf(type) != TYPE_NUMBER || (typeOf(summoner) != TYPE_NUMBER && typeOf(summoner) != TYPE_NULL)  || typeOf(birthTurn) != TYPE_NUMBER || typeOf(life) != TYPE_NUMBER || typeOf(lifeMax) != TYPE_NUMBER || typeOf(strength) != TYPE_NUMBER || typeOf(wisdom) != TYPE_NUMBER || typeOf(agility) != TYPE_NUMBER || typeOf(resistance) != TYPE_NUMBER || typeOf(science) != TYPE_NUMBER || typeOf(magic) != TYPE_NUMBER || typeOf(frequency) != TYPE_NUMBER || typeOf(TP) != TYPE_NUMBER || typeOf(MP) != TYPE_NUMBER || typeOf(TPMax) != TYPE_NUMBER || typeOf(MPMax) != TYPE_NUMBER || (typeOf(currentWeapon) != TYPE_NUMBER && typeOf(currentWeapon) != TYPE_NULL) || typeOf(weapons) != TYPE_ARRAY || typeOf(chips) != TYPE_ARRAY || typeOf(effects) != TYPE_ARRAY || typeOf(lauchedEffect) != TYPE_ARRAY) return @SIM_ERR_PARAMTYPE;
 
 // Seconde vérification : Les plages de données à respecter ainsi que d'autres conditions
 	if (lvl < 1 || lvl > 301) { debugC("newLeek - Erreur le level dois être compris entre 1 et 301", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
 	if (cell < 0 || cell > 612 || !isEmptyCell(cell)) { debugC("newLeek - Erreur la cellule dois être comprise entre 0 et 612 inclus et ne dois pas être occupé", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE;}
+	if (teamID < 0) {debugC("TeamID must be a positive number", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
 	if (type !== ENTITY_BULB && type !== ENTITY_LEEK) { debugC("newLeek - Erreur le type dois être au choix : ENTITY_BULB ou ENTITY_LEEK", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
 	if (!(type === ENTITY_BULB && _Leek[summoner] !== null || type === ENTITY_LEEK && summoner === null)) { debugC("newLeek - Erreur l'invocateur (son ID) doit être renseigner si l'entité est un bulbe, sinon reseigner null", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
 	if (birthTurn < 1) { debugC("newLeek - Erreur le birthTurn doit être supérieur ou égale à 1", COLOR_TEXT_ERROR); return @SIM_ERR_PARAM_DATARANGE; }
@@ -247,7 +248,7 @@ function newLeek (@ai, @lvl, @cell, @is_Ally, @type, @summoner, @birthTurn, @lif
 
 	var id = @getNewID();
 	_TerrainContent[cell] = @id; // Afin d'optimiser getCellContent
-	_Leek[id] = @["ai" : ai, "lvl" : lvl, "cell" : cell, "isAlly" : is_Ally, "type" : type, "birthTurn" : birthTurn, "life" : life, "lifeMax" : lifeMax, "strength" : strength, "wisdom" : wisdom, "agility" : agility, "resistance" : resistance, "science" : science, "magic" : magic, "frequency" : frequency, "TP" : TP, "MP" : MP, "TPMax" : TPMax, "MPMax" : MPMax, "currentWeapon" : currentWeapon, "weapons" : weapons, "chips" : chips, "effects" : effects, "lauchedEffects" : lauchedEffect];
+	_Leek[id] = @["ai" : ai, "lvl" : lvl, "cell" : cell, "teamID" : teamID, "type" : type, "birthTurn" : birthTurn, "life" : life, "lifeMax" : lifeMax, "strength" : strength, "wisdom" : wisdom, "agility" : agility, "resistance" : resistance, "science" : science, "magic" : magic, "frequency" : frequency, "TP" : TP, "MP" : MP, "TPMax" : TPMax, "MPMax" : MPMax, "currentWeapon" : currentWeapon, "weapons" : weapons, "chips" : chips, "effects" : effects, "lauchedEffects" : lauchedEffect];
 	return @id;
 }
 
@@ -508,12 +509,12 @@ getCell = @(function (@leek) {
 nbr++;
 isAlly = @(function (@leek) {
 	var tmp = @_Leek[leek];
-	return @(tmp === null ? false : tmp["isAlly"]);
+	return @(tmp === null ? false : tmp["teamID"] === _Leek[getLeek()]["teamID"]);
 });
 nbr++;
 isEnemy = @(function (@leek) {
 	var tmp = @_Leek[leek];
-	return @(tmp === null ? false : !tmp["isAlly"]);
+	return @(tmp === null ? false : !tmp["teamID"] === _Leek[getLeek()]["teamID"]);
 });
 nbr++;
 getLife = @(function (@leek) {
@@ -653,14 +654,16 @@ nbr++;
 getAllies = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getAllies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
-	for (var leek : var carac in _Leek) if (carac["isAlly"]) push(tmp, leek);
+	var myTeamID = _Leek[getLeek()]["teamID"];
+	for (var leek : var carac in _Leek) if (carac["teamID"] === myTeamID) push(tmp, leek);
 	return tmp;
 });
 nbr++;
 getEnemies = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getEnemies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
-	for (var leek : var carac in _Leek) if (!carac["isAlly"]) push(tmp, leek);
+	var myTeamID = _Leek[getLeek()]["teamID"];
+	for (var leek : var carac in _Leek) if (!carac["teamID"] === myTeamID) push(tmp, leek);
 	return tmp;
 });
 nbr++;
