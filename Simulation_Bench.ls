@@ -7,6 +7,7 @@ MyLeekCustom(function () {}, 139, 1, 874, 874, 300, 0, 0, 300, 0, 0, 100, 10, 4,
 
 global debugMapFunction = false;
 global debugLeekFunction = true;
+global debugFightFunction = true;
 
 if (debugMapFunction) {
 	debugNotImportant('Map Function');
@@ -120,4 +121,8 @@ if (debugLeekFunction) {
 	bench_verify(ToFr_1(isEnemy)(getLeek()), false, 'isEnemy');
 	bench_verify(ToFr_1(isEnemy)(-1), false, 'isEnemy');
 
+}
+
+if (debugFightFunction) {
+	
 }
