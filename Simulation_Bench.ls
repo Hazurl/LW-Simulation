@@ -124,5 +124,32 @@ if (debugLeekFunction) {
 }
 
 if (debugFightFunction) {
-	
+	bench_verify(ToFr_0(getAllies)(), [], 'getAllies');
+	bench_verify(ToFr_0(getEnemies)(), [], 'getEnemies');
+	bench_verify(ToFr_0(getAliveAllies)(), [], 'getAliveAllies');
+	bench_verify(ToFr_0(getAliveEnemies)(), [], 'getAliveEnemies');
+	bench_verify(ToFr_0(getAliveEnemiesCount)(), [], 'getAliveEnemiesCount');
+	bench_verify(ToFr_0(getEnemiesCount)(), [], 'getEnemiesCount');
+	bench_verify(ToFr_0(getEnemiesLife)(), [], 'getEnemiesLife');
+	bench_verify(ToFr_0(getDeadAllies)(), [], 'getDeadAllies');
+	bench_verify(ToFr_0(getDeadEnemies)(), [], 'getDeadEnemies');
+	bench_verify(ToFr_0(getDeadEnemiesCount)(), [], 'getDeadEnemiesCount');
+	bench_verify(ToFr_0(getAlliesLife)(), [], 'getAlliesLife');
+	bench_verify(ToFr_0(getAlliesCount)(), [], 'getAlliesCount');
+	bench_verify(ToFr_1(getNearestAllyTo)(getLeek()), [], 'getNearestAllyTo');
+	bench_verify(ToFr_1(getNearestAllyTo)(-1), [], 'getNearestAllyTo');
+	bench_verify(ToFr_0(getNearestAlly)(), [], 'getNearestAlly');
+	bench_verify(ToFr_1(getNearestAllyToCell)(getCell(getLeek())), [], 'getNearestAllyToCell my cell');
+	bench_verify(ToFr_1(getNearestAllyToCell)(-1), [], 'getNearestAllyToCell cell not in map range');
+	bench_verify(ToFr_1(getNearestAllyToCell)(getCell(getLeek())), [], 'getNearestAllyToCell');
+	bench_verify(ToFr_1(getNearestAllyToCell)(null), [], 'getNearestAllyToCell null');
+	bench_verify(ToFr_0(getFarthestAlly)(), [], 'getFarthestAlly');
+	bench_verify(ToFr_1(getNearestEnemyTo)(getLeek()), [], 'getNearestEnemyTo');
+	bench_verify(ToFr_1(getNearestEnemyTo)(-1), [], 'getNearestEnemyTo');
+	bench_verify(ToFr_0(getNearestEnemy)(), [], 'getNearestEnemy');
+	bench_verify(ToFr_1(getNearestAllyToCell)(getCell(getLeek())), [], 'getNearestEnemyToCell my cell');
+	bench_verify(ToFr_1(getNearestEnemyToCell)(-1), [], 'getNearestEnemyToCell cell not in map range');
+	bench_verify(ToFr_1(getNearestEnemyToCell)(getCell(getLeek())), [], 'getNearestEnemyToCell');
+	bench_verify(ToFr_1(getNearestEnemyToCell)(null), [], 'getNearestEnemyToCell null');
+	bench_verify(ToFr_0(getFarthestEnemy)(), [], 'getFarthestEnemy');
 }
