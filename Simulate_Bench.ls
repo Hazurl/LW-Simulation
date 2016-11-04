@@ -650,93 +650,93 @@ nbr++;
 //:://///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //:: FONCTION COMBAT
 
-getAllies = function () {
+getAllies = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getAllies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var leek : var carac in _Leek) if (carac["isAlly"]) push(tmp, leek);
 	return tmp;
-};
+});
 nbr++;
-getEnemies = function () {
+getEnemies = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getEnemies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var leek : var carac in _Leek) if (!carac["isAlly"]) push(tmp, leek);
 	return tmp;
-};
+});
 nbr++;
-getAliveAllies = function () {
+getAliveAllies = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getAliveAllies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var ally in getAllies()) if (!isDead(ally)) push(tmp, ally);
 	return tmp;
-};
+});
 nbr++;
-getAliveEnemies = function () {
+getAliveEnemies = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getAliveEnemies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var enemy in getEnemies()) if (!isDead(enemy)) push(tmp, enemy);
 	return tmp;
-};
+});
 nbr++;
-getAliveEnemiesCount = function () {
+getAliveEnemiesCount = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getAliveEnemies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	return count(getAliveEnemies);
-};
+});
 nbr++;
-getEnemiesCount = function () {
+getEnemiesCount = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getEnemiesCount - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	return count(getEnemies());
-};
+});
 nbr++;
-getEnemiesLife = function () {
+getEnemiesLife = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getEnemiesLife - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	var tmp = 0;
 	for (var enemy in getEnemies()) tmp += (_Leek[enemy]["life"] <= 0)? 0 : _Leek[enemy]["life"];
 	return tmp;
-};
+});
 nbr++;
-getDeadAllies = function () {
+getDeadAllies = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getDeadAllies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var ally in getAllies()) if (isDead(ally)) push(tmp, ally);
 	return tmp;
-};
+});
 nbr++;
-getDeadEnemies = function () {
+getDeadEnemies = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getDeadEnemies - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return []; }
 	var tmp = [];
 	for (var enemy in getEnemies()) if (isDead(enemy)) push(tmp, enemy);
 	return tmp;
-};
+});
 nbr++;
-getDeadEnemiesCount = function () {
+getDeadEnemiesCount = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getDeadEnemiesCount - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	return count(getDeadEnemies());
-};
+});
 nbr++;
-getAlliesLife = function () {
+getAlliesLife = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getAlliesLife - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	var tmp = 0;
 	for (var ally in getAllies()) tmp += (_Leek[ally]["life"] <= 0)? 0 : _Leek[ally]["life"];
 	return tmp;
-};
+});
 nbr++;
-getAlliesCount = function () {
+getAlliesCount = @(function () {
 	if (_Leek === null || _Leek === []) { debugC("getAlliesCount - Erreur, aucun poireau n'est enregistré", COLOR_TEXT_ERROR); return 0; }
 	return count(getAllies());
-};
+});
 nbr++;
-getNearestAllyTo = function (leek) {
+getNearestAllyTo = @(function (leek) {
 	if (_Leek[leek] === null) { debugC("getNearestAllyTo - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	return getNearestAllyToCell(getCell(leek));
-};
+});
 nbr++;
-getNearestAlly = function () {
+getNearestAlly = @(function () {
 	if (_Leek[getLeek()] === null) { debugC("getNearestAlly - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	return getNearestAllyToCell(getCell(getLeek()));
-};
+});
 nbr++;
-getNearestAllyToCell = function (cell) {
+getNearestAllyToCell = @(function (cell) {
 	var NearestCell = null;
 	var dist = -1;
 	
@@ -748,9 +748,9 @@ getNearestAllyToCell = function (cell) {
 		}
 	} 
 	return NearestCell;
-};
+});
 nbr++;
-getFarthestAlly = function () {
+getFarthestAlly = @(function () {
 	if (_Leek[getLeek()] === null) { debugC("getFarthestAlly - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	var FarthestCell = null;
 	var dist = -1;
@@ -763,19 +763,19 @@ getFarthestAlly = function () {
 		}
 	} 
 	return FarthestCell;
-};
+});
 nbr++;
-getNearestEnemyTo = function (leek) {
+getNearestEnemyTo = @(function (leek) {
 	if (_Leek[leek] === null) { debugC("getNearestEnemyTo - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	return getNearestEnemyToCell(getCell(leek));
-};
+});
 nbr++;
-getNearestEnemy = function () {
+getNearestEnemy = @(function () {
 	if (_Leek[getLeek()] === null) { debugC("getNearestEnemy - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	return getNearestEnemyToCell(getCell(getLeek()));
-};
+});
 nbr++;
-getNearestEnemyToCell = function (cell) {
+getNearestEnemyToCell = @(function (cell) {
 	var NearestCell = null;
 	var dist = -1;
 	
@@ -787,9 +787,9 @@ getNearestEnemyToCell = function (cell) {
 		}
 	} 
 	return NearestCell;
-};
+});
 nbr++;
-getFarthestEnemy = function () {
+getFarthestEnemy = @(function () {
 	if (_Leek[getLeek()] === null) { debugC("getFarthestEnemy - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	var FarthestCell = null;
 	var dist = -1;
@@ -802,9 +802,9 @@ getFarthestEnemy = function () {
 		}
 	} 
 	return FarthestCell;
-};
+});
 nbr++;
-setWeapon = function (weapon) {
+setWeapon = @(function (weapon) {
 	if (_Leek[getLeek()] === null) { debugC("setWeapon - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	
 	if (search(_Leek[getLeek()]["weapons"], weapon) === null) return ;
@@ -814,12 +814,12 @@ setWeapon = function (weapon) {
 		else --_Leek[getLeek()]["TP"];
 	}
 	_Leek[getLeek()]["currentWeapon"] = weapon;
-};
+});
 nbr++;
 debugC("INIATIALISATION_FUNCTION - " + nbr + " fonctions recodées en " + _EndOperation()  + " opérations.", COLOR_TEXT_DESCRIBE);
 }
 
-lineOfSight = function (start, end, leekToIgnore) {
+lineOfSight = @(function (start, end, leekToIgnore) {
 //mark([start,end], getColor(255, 255, 0));
 //pause();
 	var x1 = getCellX(start);
@@ -864,16 +864,16 @@ lineOfSight = function (start, end, leekToIgnore) {
 		}
 	}
 	return true;
-};
+});
 
-canUseWeapon = function (weapon, leek) {
+canUseWeapon = @(function (weapon, leek) {
 	if (_Leek[leek] === null) { debugC("canUseWeapon - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	if (!isWeapon(weapon)) { debugC("canUseWeapon - Erreur de l'arme, celle-ci n'est pas répertorié", COLOR_TEXT_ERROR); return null; }
 
 	return canUseWeaponOnCell(weapon, getCell(leek));
-};
+});
 
-canUseWeaponOnCell = function (weapon, cell) {
+canUseWeaponOnCell = @(function (weapon, cell) {
 	if (!isWeapon(weapon)) { debugC("canUseWeaponOnCell - Erreur de l'arme, celle-ci n'est pas répertorié", COLOR_TEXT_ERROR); return null; }
 	
 	
@@ -882,16 +882,16 @@ canUseWeaponOnCell = function (weapon, cell) {
 	if (isInlineWeapon(weapon) && !isOnSameLine(getCell(getLeek()), cell)) return false;
 	if (!lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
 	return true;
-};
+});
 
-canUseChip = function (Chip, leek) {
+canUseChip = @(function (Chip, leek) {
 	if (_Leek[leek] === null) { debugC("canUseChip - Erreur de l'ID, aucun poireau n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	if (!isChip(Chip)) { debugC("canUseChip - Erreur de l'arme, celle-ci n'est pas répertorié", COLOR_TEXT_ERROR); return null; }
 
 	return canUseWeaponOnCell(Chip, getCell(leek));
-};
+});
 
-canUseChipOnCell = function (Chip, cell) {
+canUseChipOnCell = @(function (Chip, cell) {
 	if (!isChip(Chip)) { debugC("canUseChipOnCell - Erreur de l'arme, celle-ci n'est pas répertorié", COLOR_TEXT_ERROR); return null; }
 	
 	
@@ -901,9 +901,9 @@ canUseChipOnCell = function (Chip, cell) {
 	if (chipNeedLos(Chip) && !lineOfSight(getCell(getLeek()),cell, getLeek())) return false;
 	if (getCooldown(Chip, getLeek()) > 0) return false;
 	return true;
-};
+});;
 
-resurrect = function (entity, cell) {
+resurrect = @(function (entity, cell) {
 	if (_Leek[entity] === null) { debugC("resurrect - Erreur de l'ID, aucune entité n'y est attribué", COLOR_TEXT_ERROR); return null; }
 	if (!isDead(entity)) { debugC("resurrect - Erreur le poireau dois être mort", COLOR_TEXT_ERROR); return null; }
 	if (search(_Leek[getLeek()]["chips"], CHIP_RESURRECTION)) { debugC("resurrect - Erreur la puce n'est pas équipé dans votre inventaire", COLOR_TEXT_ERROR); return null; }
@@ -911,9 +911,9 @@ resurrect = function (entity, cell) {
 	
 	SetCell(entity, cell);
 	SetLife_LifeMax(entity, getTotalLife(entity)/4, getTotalLife(entity)/2);
-};
+});
 
-summon = function (chip, cell, ai) {
+summon = @(function (chip, cell, ai) {
 	if (search(_Leek[getLeek()]["chips"], chip)) { debugC("summon - Erreur la puce n'est pas équipé dans votre inventaire", COLOR_TEXT_ERROR); return null; }
 	if (!canUseChipOnCell(chip, cell)) { debugC("summon - Erreur la puce ne peut pas être utilisé sur cette cellule", COLOR_TEXT_ERROR); return null; }
 	if (typeOf(ai) !== TYPE_FUNCTION) { debugC("summon - Erreur le paramètre ai dois être une fonction", COLOR_TEXT_ERROR); return null; }
@@ -997,9 +997,9 @@ summon = function (chip, cell, ai) {
 	} else { debugC("summon - Erreur la puce renseigner n'est pas un bulbe", COLOR_TEXT_ERROR); return null; }
 	
 	 return newLeek(ai, getLevel(getLeek()), cell, true, ENTITY_BULB, getLeek(), getTurn(), lifeMax, lifeMax, strength, wisdom, agility, resistance, science, 0, 0, TPMax, MPMax, TPMax, MPMax, null, [], chips, [], []);
-};
+});
 
-getWeaponEffectiveArea = function(weapon, cell, from) {
+getWeaponEffectiveArea = @(function(weapon, cell, from) {
 	if (!isWeapon(weapon)) { debugC("getWeaponEffectiveArea - Erreur l'arme donnée n'en est pas une.", COLOR_TEXT_ERROR); return []; }
 	if (!canUseWeaponOnCellFrom(weapon, cell, from)) { debugC("getWeaponEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec l'arme " + weapon, COLOR_TEXT_ERROR); return []; }
 	
@@ -1029,9 +1029,9 @@ getWeaponEffectiveArea = function(weapon, cell, from) {
 		
 		return cellstmp;
 	}
-};
+});
 
-getChipEffectiveArea = function(chip, cell, from) {
+getChipEffectiveArea = @(function(chip, cell, from) {
 	if (!isChip(chip)) { debugC("getChipEffectiveArea - Erreur la puce donnée n'en est pas une.", COLOR_TEXT_ERROR); return []; }
 	if (!canUseChipOnCellFrom(chip, cell, from)) { debugC("getChipEffectiveArea - Erreur impossible s'attaquer de puis " + from + " sur " + cell + " avec la puce " + chip, COLOR_TEXT_ERROR); return []; }
 	var areaChip = getChipArea(chip);
@@ -1060,9 +1060,9 @@ getChipEffectiveArea = function(chip, cell, from) {
 		
 		return cellstmp;
 	}
-};
+});
 
-getWeaponTargets = function (weapon, cell) {
+getWeaponTargets = @(function (weapon, cell) {
 	if (!isWeapon(weapon)) { debugC("getWeaponTargets - Erreur l'arme donnée n'en est pas une.", COLOR_TEXT_ERROR); return []; }
 	
 	var tmp = [];
@@ -1072,9 +1072,9 @@ getWeaponTargets = function (weapon, cell) {
 	}
 	
 	return tmp;
-};
+});
 
-getChipTargets = function (chip, cell) {
+getChipTargets = @(function (chip, cell) {
 	if (!isChip(chip)) { debugC("getChipTargets - Erreur la puce donnée n'en est pas une.", COLOR_TEXT_ERROR); return []; }
 	
 	var tmp = [];
@@ -1084,9 +1084,9 @@ getChipTargets = function (chip, cell) {
 	}
 	
 	return tmp;
-};
+});
 
-getCellsToUseWeaponOnCell = function (weapon, cell, ignoredCells) {
+getCellsToUseWeaponOnCell = @(function (weapon, cell, ignoredCells) {
 	var area = Area(cell, getWeaponMaxRange(weapon));
 	var retour = [];
 	mark(cell, COLOR_GREEN);
@@ -1096,13 +1096,13 @@ getCellsToUseWeaponOnCell = function (weapon, cell, ignoredCells) {
 		push(retour, cellIn);
 	}
 	return retour;
-};
+});
 
-getCellsToUseWeapon = function (weapon, leek, ignoredCells) {
+getCellsToUseWeapon = @(function (weapon, leek, ignoredCells) {
 	return getCellsToUseWeaponOnCell(weapon, getCell(leek), ignoredCells);
-};
+});
 
-getCellToUseWeapon = function (weapon, leek, ignoredCells) {
+getCellToUseWeapon = @(function (weapon, leek, ignoredCells) {
 	var NearestCell = null;
 	var dist = null;
 	
@@ -1114,9 +1114,9 @@ getCellToUseWeapon = function (weapon, leek, ignoredCells) {
 		}
 	}
 	return NearestCell;
-};
+});
 
-getCellToUseWeaponOnCell = function (weapon, cell, ignoredCells) {
+getCellToUseWeaponOnCell = @(function (weapon, cell, ignoredCells) {
 	var NearestCell = null;
 	var dist = null;
 	
@@ -1128,9 +1128,9 @@ getCellToUseWeaponOnCell = function (weapon, cell, ignoredCells) {
 		}
 	}
 	return NearestCell;
-};
+});
 
-getCellsToUseChipOnCell = function (Chip, cell, ignoredCells) {
+getCellsToUseChipOnCell = @(function (Chip, cell, ignoredCells) {
 	var area = Area(cell, getChipMaxRange(Chip));
 	var retour = [];
 	mark(cell, COLOR_GREEN);
@@ -1140,13 +1140,13 @@ getCellsToUseChipOnCell = function (Chip, cell, ignoredCells) {
 		push(retour, cellIn);
 	}
 	return retour;
-};
+});
 
-getCellsToUseChip = function (Chip, leek, ignoredCells) {
+getCellsToUseChip = @(function (Chip, leek, ignoredCells) {
 	return getCellsToUseChipOnCell(Chip, getCell(leek), ignoredCells);
-};
+});
 
-getCellToUseChip = function (Chip, leek, ignoredCells) {
+getCellToUseChip = @(function (Chip, leek, ignoredCells) {
 	var NearestCell = null;
 	var dist = null;
 	
@@ -1158,9 +1158,9 @@ getCellToUseChip = function (Chip, leek, ignoredCells) {
 		}
 	}
 	return NearestCell;
-};
+});
 
-getCellToUseChipOnCell = function (Chip, cell, ignoredCells) {
+getCellToUseChipOnCell = @(function (Chip, cell, ignoredCells) {
 	var NearestCell = null;
 	var dist = null;
 	
@@ -1172,7 +1172,7 @@ getCellToUseChipOnCell = function (Chip, cell, ignoredCells) {
 		}
 	}
 	return NearestCell;
-};
+});
 
 
 
