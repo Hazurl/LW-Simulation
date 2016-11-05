@@ -1,7 +1,7 @@
 //The 'Check' parameter need to be at true if you are not sure about you argument passed in parameter
+include("102_Debug");
 
-function new_Leek (@check, @ai, @lvl, @cell, @teamID, @type, @summoner, @birthTurn, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic,
- @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
+function new_Leek (@check, @ai, @lvl, @cell, @teamID, @type, @summoner, @birthTurn, @life, @lifeMax, @strength, @wisdom, @agility, @resistance, @science, @magic, @frequency, @TP, @MP, @TPMax, @MPMax, @currentWeapon, @weapons, @chips, @effects, @lauchedEffect) {
 	return function (@cmd) {
 		return @(
 			cmd < 16 ?
@@ -67,38 +67,38 @@ function new_Leek (@check, @ai, @lvl, @cell, @teamID, @type, @summoner, @birthTu
 						:	cmd < 31 ?
 								cell 			// 30
 							:	teamID 	*/		// 31
-		)
+		);
 	};
 }
 
 global runAI = 0,
-	   gtLevel = 1,
-	   gtCell = 2,
+	   gtLevel = 1,							// 9
+	   gtCell = 2,							// 9
 	   gtTeam = 3,
-	   gtType = 4,
-	   gtSummoner = 5,
-	   gtBirthTurn = 6,
-	   gtLife = 7,
-	   gtTotalLife = 8,
-	   gtStrenght = 9,
-	   gtWisdom = 10,
-	   gtAgility = 11,
-	   gtResistance = 12,
-	   gtScience = 13,
-	   gtMagic = 14,
-	   gtFrequency = 15,
-	   gtTP = 16,
-	   getTotalTP = 17,
-	   gtMP = 18,
-	   gtTotalMP = 19,
-	   gtWeapon = 20,
+	   gtType = 4,					// 1
+	   gtSummoner = 5,			
+	   gtBirthTurn = 6,				// 7
+	   gtLife = 7,								// 13
+	   gtTotalLife = 8,							// 13
+	   gtStrenght = 9,									// 10
+	   gtWisdom = 10,									// 10
+	   gtAgility = 11,									// 10
+	   gtResistance = 12,								// 10
+	   gtScience = 13,									// 10
+	   gtMagic = 14,							// 10
+	   gtFrequency = 15,						// 11
+	   gtTP = 16,										// 6
+	   getTotalTP = 17,				// 6
+	   gtMP = 18,							// 6
+	   gtTotalMP = 19,						// 6
+	   gtWeapon = 20,						// 8
 	   gtWeapons = 21,
 	   gtChips = 22,
 	   gtEffects = 23,
-	   gtLaunchedEffects = 21;
-
+	   gtLaunchedEffects = 24;
+global _l;
 var l = new_Leek(false, function () {}, 139, 1, 0, ENTITY_LEEK, "gtSummoner", 0, 873, 874, 300, 100, 0, 300, 2000, 50, 100, 10, 4, 12, 6, null, [109, 43], [8, 18, 20, 21, 22, 29, 32, 33, 34], ["gtEffects"], ["gtLaunchedEffects"]);
-include("102_Debug");
+_l = [l];
 
 bench_verify(ToFr_1(l)(runAI), function () {}, "runAI");
 bench_verify(ToFr_1(l)(gtLevel), 139, "gtLevel");
@@ -125,3 +125,18 @@ bench_verify(ToFr_1(l)(gtWeapons), [109, 43], "gtWeapons");
 bench_verify(ToFr_1(l)(gtChips), [8, 18, 20, 21, 22, 29, 32, 33, 34], "gtChips");
 bench_verify(ToFr_1(l)(gtEffects), ["gtEffects"], "gtEffects");
 bench_verify(ToFr_1(l)(gtLaunchedEffects), ["gtLaunchedEffects"], "gtLaunchedEffects");
+
+getLevel = @(function (@leek) {
+	var tmp = @_l[leek];
+	return @(tmp === null ? null : tmp(gtLevel));
+});
+
+getCell = @(function (@leek) {
+	var tmp = @_l[leek];
+	return @(tmp === null ? null : tmp(gtCell));
+});
+
+debugEvent ("With recoded natives functions");
+bench_verify(ToFr_1(getLevel)(0), 139, "getLevel");
+bench_verify(ToFr_1(getCell)(0), 1, "getCell");
+
